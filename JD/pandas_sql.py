@@ -95,6 +95,9 @@ print df.groupby('sex')['tip'].count()
 # 实现在agg()中指定dict：
 print df.groupby('sex').agg({'tip': np.max, 'total_bill': np.sum})
 
+
+
+
 # count(distinct **)
 print df.groupby('tip').agg({'sex': pd.Series.nunique})
 
