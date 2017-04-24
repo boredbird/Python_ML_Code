@@ -37,3 +37,9 @@ result01 = result.groupby('user_id','sku_id').agg({'time_y':np.max,'time_y':np.m
 #
 
 
+result = load_data.load_from_csv(raw_data_path,['user_sku_max_min_time',])
+result[0]['time_y'] = result[0]['time_y'].astype(np.datetime64)
+result01 = result[0].groupby(['user_id','sku_id'])['time_y'].agg(lambda arr:arr.max()-arr.min())
+
+import matplotlib.pyplot as plt
+plt.plot(result01[2].days)
