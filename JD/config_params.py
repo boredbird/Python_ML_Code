@@ -17,6 +17,9 @@ split_data_path = 'E:/Code/Python_ML_Code/JD/split_data/'
 
 # model path
 
+# feature path
+feature_path = 'E:/Code/Python_ML_Code/JD/feature_data/'
+
 # submission path
 submission_path = 'E:/Code/Python_ML_Code/JD/submission/'
 

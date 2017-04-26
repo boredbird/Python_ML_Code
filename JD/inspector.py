@@ -3,9 +3,10 @@ __author__ = 'maomaochong'
 import sys
 sys.path.append('E:/Code/Python_ML_Code/JD')
 import pandas as pd
-import load_data
+import load_data as ld
 import time
 import numpy as np
+from config_params import *
 
 """
 # create table inspector_03
@@ -56,4 +57,9 @@ import numpy as np
 # now-days
 
 
-
+dataset = ld.load_from_csv(feature_path,['user_02','user_01',])
+dataset[0][dataset[0]['order_cnt']>0].info()
+#行为表中的用户数:104301
+#下单用户数：26919
+#用户表中的用户数：105321
+#action type 1 数:305321
