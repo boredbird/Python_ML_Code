@@ -90,3 +90,35 @@ for file in feature_file:
     #merge all type done
     ld.load_into_csv(feature_path, adict['df_%s' % (file)], file_name=file+'_sku')
     print 'Done ', file, '!!!'
+
+
+##################################group by cate##############################
+feature_file = ['trainset4_feature','trainset3_feature','trainset2_feature','trainset1_feature','testset_feature','predictset_feature']
+
+for file in feature_file:
+    adict = locals()
+
+    dataset = ld.load_from_csv(split_data_path,[file,])
+    ##set 转为 dataframe
+    cate_set = set(dataset[0]['cate'])
+    cate_set = pd.DataFrame({'cate':list(cate_set),})
+    cate_set['cate'] = cate_set['cate'].astype(int)
+
+    ##type
+    type_list = ['browse_cnt','shoppingcar_in_cnt','shoppingcar_out_cnt','order_cnt','follow_cnt','click_cnt']
+    g = dataset[0].groupby('cate')
+    adict['df_%s' % (file)] = cate_set
+    for i in range(6):
+        #group by
+        gb = g.apply(lambda x: x[x['type'] == i+1].count())
+        gb = gb.drop(['sku_id', 'time', 'model_id', 'type', 'cate', 'brand'], axis=1)
+        gb.columns = list([type_list[i],])
+        gb = gb.reset_index()
+        gb['cate'] = gb['cate'].astype(int)
+        #merge
+        adict['df_%s' % (file)] = pd.merge(adict['df_%s' % (file)], gb, how='left', on='cate')
+        print 'done ',file,' ',i,' ',type_list[i]
+
+    #merge all type done
+    ld.load_into_csv(feature_path, adict['df_%s' % (file)], file_name=file+'_cate')
+    print 'Done ', file, '!!!'
