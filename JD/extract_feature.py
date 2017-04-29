@@ -93,7 +93,8 @@ for file in feature_file:
 
 
 ##################################group by cate##############################
-feature_file = ['trainset4_feature','trainset3_feature','trainset2_feature','trainset1_feature','testset_feature','predictset_feature']
+'trainset4_feature','trainset3_feature','trainset2_feature','trainset1_feature',
+feature_file = ['testset_feature','predictset_feature']
 
 for file in feature_file:
     adict = locals()
@@ -122,3 +123,35 @@ for file in feature_file:
     #merge all type done
     ld.load_into_csv(feature_path, adict['df_%s' % (file)], file_name=file+'_cate')
     print 'Done ', file, '!!!'
+
+
+
+##################################group by user_id sku_id##############################
+feature_file = ['trainset4_feature','trainset3_feature','trainset2_feature','trainset1_feature','testset_feature','predictset_feature']
+##type
+type_list = ['browse_cnt', 'shoppingcar_in_cnt', 'shoppingcar_out_cnt', 'order_cnt', 'follow_cnt', 'click_cnt']
+
+for file in feature_file:
+    dataset = ld.load_from_csv(split_data_path,[file,])
+
+    user_sku_set = dataset[0].loc[:,['user_id','sku_id','cate','brand']].drop_duplicates()
+    user_sku_set['user_id'] = user_sku_set['user_id'].astype(int)
+    user_sku_set['sku_id'] = user_sku_set['sku_id'].astype(int)
+
+    for i in range(6):
+        print i
+        #group by
+        a = dataset[0][dataset[0]['type'] == i + 1]
+        df = a.groupby(['user_id','sku_id']).count()
+        #tidy data type
+        df = df.drop(['model_id', 'type','cate','brand'], axis=1)
+        df.columns = list([type_list[i],])
+        df = df.reset_index()
+        df['user_id'] = df['user_id'].astype(int)
+        df['sku_id'] = df['sku_id'].astype(int)
+        #merge
+        user_sku_set = pd.merge(user_sku_set, df, how='left', on=['user_id','sku_id'])
+
+    ld.load_into_csv(feature_path, user_sku_set, file_name=file+'_user_sku')
+    print 'Done ', file, '!!!'
+

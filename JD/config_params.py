@@ -19,6 +19,10 @@ split_data_path = 'E:/Code/Python_ML_Code/JD/split_data/'
 
 # feature path
 feature_path = 'E:/Code/Python_ML_Code/JD/feature_data/'
+acc_feature_path = 'E:/Code/Python_ML_Code/JD/feature_data/acc_file/'
+
+# gen data path
+gen_data_path = 'E:/Code/Python_ML_Code/JD/gen_data/'
 
 # submission path
 submission_path = 'E:/Code/Python_ML_Code/JD/submission/'

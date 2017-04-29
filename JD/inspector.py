@@ -83,3 +83,43 @@ Out[6]:
  '2016-04-11',
  '2016-04-15'}
 
+feature_file = ['trainset4_feature','trainset3_feature','trainset2_feature','trainset1_feature','testset_feature','predictset_feature']
+lable_file = ['trainset4_lable','trainset3_lable','trainset2_lable','trainset1_lable','testset_lable','predictset_lable']
+
+for i in range(6):
+    fa = feature_file[i]
+    fb = lable_file[i]
+    dataseta = ld.load_from_csv(split_data_path,[fa,])
+    datasetb = ld.load_from_csv(split_data_path,[fb,])
+    user_seta =  set(dataseta[0]['user_id'])
+    user_setb = set(datasetb[0]['user_id'])
+    print fa,'  ',fb
+    print len(user_seta)
+    print len(user_setb)
+    print len(user_seta&user_setb)
+
+"""
+trainset4_feature    trainset4_lable
+75030
+50571
+43156
+trainset3_feature    trainset3_lable
+91380
+52636
+49163
+trainset2_feature    trainset2_lable
+94537
+50277
+47451
+trainset1_feature    trainset1_lable
+95614
+50733
+47893
+testset_feature    testset_lable
+96576
+52092
+49988
+predictset_feature    predictset_lable
+94359
+"""
+
