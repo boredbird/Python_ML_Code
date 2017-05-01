@@ -20,14 +20,19 @@ from config_params import *
 # on t1.user_id=t2.user_id and t1.sku_id=t2.sku_id
 # group by t1.`user_id`,t1.`sku_id`;
 """
-# raw_data_path = 'E:/Code/Python_ML_Code/JD/raw_data/'
-#
-# jdata_action_all = load_data.load_from_csv(raw_data_path,['JData_Action_ALL',])
-# inspector_02 = load_data.load_from_mysql('inspector_02')
-#
-# print 'reading: ' +  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
-# result = pd.merge(inspector_02, jdata_action_all[0], how='inner', on=['user_id', 'sku_id'])
-# print 'done: ' +  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+raw_data_path = 'E:/Code/Python_ML_Code/JD/raw_data/'
+
+jdata_action_all = ld.load_from_csv(raw_data_path,['JData_Action_ALL',])
+inspector_02 = ld.load_from_mysql('inspector_02')
+
+print 'reading: ' +  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+result = pd.merge(inspector_02, jdata_action_all[0], how='inner', on=['user_id', 'sku_id'])
+print 'done: ' +  time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+ld.load_into_csv(feature_path, result, file_name='inspector_03')
+
+# result1 = result.loc[:5,]
+# ld.load_into_mysql(result1,'inspector_03')
+
 #
 #
 # result01 = result.groupby('user_id','sku_id').agg({'time_y':np.max,'time_y':np.min})
@@ -123,3 +128,37 @@ predictset_feature    predictset_lable
 94359
 """
 
+dataset = ld.load_from_csv(raw_data_path,['JData_Action_ALL',])
+"""
+dataset = ld.load_from_csv(raw_data_path,['JData_Action_ALL',])
+reading: JData_Action_ALL2017-04-30 12:31:11
+done: JData_Action_ALL2017-04-30 12:31:53
+df = dataset[0][dataset[0]['type'] == 4]
+sum(dataset[0]['type'] == 4)
+Out[5]:
+48252
+df = df.loc[:,['user_id','sku_id']]
+df = df.drop_duplicates()
+df.info()
+<class 'pandas.core.frame.DataFrame'>
+Int64Index: 46607 entries, 351 to 50601111
+Data columns (total 2 columns):
+user_id    46607 non-null float64
+sku_id     46607 non-null int64
+dtypes: float64(1), int64(1)
+memory usage: 1.1 MB
+"""
+
+df['user_id'] = df['user_id'].astype(int)
+df['sku_id'] = df['sku_id'].astype(int)
+dataset[0]['user_id'] = dataset[0]['user_id'].astype(int)
+dataset[0]['sku_id'] = dataset[0]['sku_id'].astype(int)
+
+dataset[0] = pd.merge(dataset[0], df, how='inner', on=['user_id', 'sku_id'])
+##4893684
+ld.load_into_csv(feature_path, dataset[0], file_name='user_sku_order_action')
+
+
+
+dataset = ld.load_from_csv(raw_data_path,['JData_Action_ALL',])
+dataset = ld.load_from_csv(raw_data_path,['JData_Action_ALL',])

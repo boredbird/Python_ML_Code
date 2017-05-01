@@ -1,9 +1,11 @@
 # -*- coding: UTF-8 -*-
 import MySQLdb
 import sys
+sys.path.append('E:/Code/Python_ML_Code/JD')
 from sqlalchemy import create_engine
 import pandas as pd
 import time
+from config_params import *
 #
 # conn = MySQLdb.connect(host='10.83.4.61', user='root', passwd='123456', db='crawler', port=3306, use_unicode=True,
 #                        charset="utf8")
@@ -16,7 +18,17 @@ host = 'localhost'
 port = 3306
 db = 'dmr'
 user = 'root'
-password = '123456'
+password = 'zch0302'
+
+df_interval_acc_file = ['trainset4_feature_interval_acc','trainset3_feature_interval_acc','trainset2_feature_interval_acc','trainset1_feature_interval_acc','testset_feature_interval_acc','predictset_feature_interval_acc']
+lable_file = ['trainset4_lable','trainset2_lable','trainset1_lable','testset_lable','predictset_lable']
+
+for i in range(6):
+    df = pd.read_csv(feature_path + lable_file[i] +'.csv')
+    print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+    df.to_sql(lable_file[i], con=engine,flavor= None, if_exists='append', index=False,chunksize =2000000)
+    print time.strftime('%Y-%m-%d %H:%M:%S', time.localtime(time.time()))
+
 
 # engine = create_engine(str(r"mysql+mysqldb://%s:" + '%s' + "@%s/%s") % (user, password, host, db))
 #

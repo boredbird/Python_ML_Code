@@ -407,12 +407,53 @@ GROUP BY t1.`user_id`,t1.`sku_id`;
 
 
 ####cate_brand_sku_comment
+select count(*) from `trainset4_feature_interval_acc` where order_cnt>0;--12271
+
+select count(*) from  `trainset4_lable`;--3133
+
+select count(*)
+from trainset4_lable t1
+inner join trainset4_feature_interval_acc t2
+on t1.user_id=t2.user_id and t1.sku_id=t2.sku_id;--1139
+
+
+select count(*) from `trainset3_feature_interval_acc` where order_cnt>0;--22198
+
+select count(*) from  `trainset3_lable`;--2801
+
+select count(*)
+from trainset3_lable t1
+inner join trainset3_feature_interval_acc t2
+on t1.user_id=t2.user_id and t1.sku_id=t2.sku_id;--1207
+
+##有行为的用户下单率依然很低
+##行为 194万 user_id,sku_id
+##行为 91380 user_id
+##行为期间下单 22198 user_id,sku_id
+##预测期间下单 1207 user_id,sku_id
+##应该人工干预，有效减少
+#行为期间已经下过单的用户，因为复购占比不高
+#行为期间未下单，预测期间也不下单的，这部分是大头
+##时间分布：最后下单时间 与 最开始有行为时间的差值
+##时间分布：最后下单时间 与 次级有行为时间的差值（为了过滤掉行为时间久远，不太可能下单的）
+
+
+select day_cnt,count(*)
+from
+(select user_id,sku_id,datediff(time_x,time_y) as day_cnt
+from `inspector_03` t
+where t.type_x =4
+and t.type_y <> 4
+group by user_id,sku_id) tt
+group by day_cnt;
 
 
 
-
-
-
+select t.*,datediff(time_x,time_y) as day_cnt
+from `inspector_03` t
+where t.type_x =4
+and t.type_y <> 4
+order by day_cnt desc
 
 
 
