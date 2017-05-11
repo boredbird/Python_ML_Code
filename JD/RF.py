@@ -28,6 +28,9 @@ train_dataset = pd.read_csv(gen_data_path + train_data_file[0] + '.csv')
 pd.set_option('max_info_columns', 500)
 train_dataset.dtypes[train_dataset.dtypes == 'object']
 
+
+dataset = pd.read_csv('G:/gen_data/testset_kuanbiao.csv')
+
 columns = ['acc_rg_day_diff'
 ,'acc_browse_order_rate'
 ,'acc_shopcar_order_rate'
