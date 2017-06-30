@@ -4,7 +4,6 @@ __author__ = 'chunhui.zhang'
 import pandas as pd
 import time
 import traceback
-import MySQLdb
 import sys
 from sqlalchemy import create_engine
 
@@ -40,7 +39,7 @@ def load_into_csv(path,df,file_name=None):
 
 def load_into_mysql(df,tablename):
     reload(sys)
-    sys.setdefaultencoding('utf-8')
+    # sys.setdefaultencoding('utf-8')
     host = 'localhost'
     port = 3306
     db = 'dmr'
@@ -63,7 +62,7 @@ def load_into_mysql(df,tablename):
 
 def load_from_mysql(tablename):
     reload(sys)
-    sys.setdefaultencoding('utf-8')
+    # sys.setdefaultencoding('utf-8')
     host = 'localhost'
     port = 3306
     db = 'dmr'
