@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/../Python_Crawler/.idea/Code.iml" filepath="$PROJECT_DIR$/../Python_Crawler/.idea/Code.iml" />
-      <module fileurl="file://$PROJECT_DIR$/../EasyML/.idea/EasyML.iml" filepath="$PROJECT_DIR$/../EasyML/.idea/EasyML.iml" />
       <module fileurl="file://$PROJECT_DIR$/../O2O-Coupon-Usage-Forecast/.idea/O2O-Coupon-Usage-Forecast.iml" filepath="$PROJECT_DIR$/../O2O-Coupon-Usage-Forecast/.idea/O2O-Coupon-Usage-Forecast.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/Python_ML_Code.iml" filepath="$PROJECT_DIR$/.idea/Python_ML_Code.iml" />
       <module fileurl="file://$PROJECT_DIR$/../scikit-learn-book/.idea/scikit-learn-book.iml" filepath="$PROJECT_DIR$/../scikit-learn-book/.idea/scikit-learn-book.iml" />
