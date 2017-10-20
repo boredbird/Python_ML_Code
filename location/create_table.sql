@@ -18,7 +18,7 @@ CREATE TABLE `ccf_first_round_user_shop_behavior` (
   `time_stamp` DATETIME DEFAULT NULL COMMENT '行为时间戳',
   `longitude` DOUBLE(12,4) DEFAULT NULL COMMENT '行为发生时位置-经度',
   `latitude` DOUBLE(12,4) DEFAULT NULL COMMENT '行为发生时位置-纬度',
-  `wifi_infos` VARCHAR(400) DEFAULT NULL COMMENT '行为发生时Wifi环境，包括bssid（wifi唯一识别码），signal（强度），flag（是否连接）'
+  `wifi_infos` VARCHAR(1000) DEFAULT NULL COMMENT '行为发生时Wifi环境，包括bssid（wifi唯一识别码），signal（强度），flag（是否连接）'
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='用户在店铺内交易表';
 
 DROP TABLE `evaluation_public`;
@@ -29,7 +29,7 @@ CREATE TABLE `evaluation_public` (
   `time_stamp` DATETIME DEFAULT NULL COMMENT '行为时间戳',
   `longitude` DOUBLE(12,4) DEFAULT NULL COMMENT '行为发生时位置-经度',
   `latitude` DOUBLE(12,4) DEFAULT NULL COMMENT '行为发生时位置-纬度',
-  `wifi_infos` VARCHAR(400) DEFAULT NULL COMMENT '行为发生时Wifi环境'
+  `wifi_infos` VARCHAR(1000) DEFAULT NULL COMMENT '行为发生时Wifi环境'
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 COMMENT='店铺和商场信息表';
 
 
@@ -51,4 +51,13 @@ COUNT(*)	COUNT(DISTINCT user_id)	COUNT(DISTINCT mall_id)
 483931	338642	1
 */
 
+SELECT MAX(LENGTH(wifi_infos)) FROM `ccf_first_round_user_shop_behavior`;--419
+
 SELECT * FROM ccf_first_round_user_shop_behavior;
+
+
+
+
+
+
+
