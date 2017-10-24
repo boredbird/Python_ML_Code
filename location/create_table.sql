@@ -252,71 +252,6 @@ LEFT JOIN
  `ccf_first_round_shop_info`   t1
 ON t1.shop_id=t2.shop_id;
 
-DROP TABLE ccf_first_round_user_shop_straightdistance_agg;
-CREATE TABLE ccf_first_round_user_shop_straightdistance_agg
-AS
-SELECT shop_id,category_id,mall_id,COUNT(*),MIN(distance),MAX(distance),AVG(distance) 
-FROM ccf_first_round_user_shop_straightdistance 
-GROUP BY shop_id,category_id,mall_id;
-
-SELECT mall_id,COUNT(*),MIN(distance),MAX(distance),AVG(distance) 
-FROM ccf_first_round_user_shop_straightdistance 
-GROUP BY mall_id;
-
-SELECT COUNT(*),COUNT(DISTINCT user_id),COUNT(DISTINCT shop_id),COUNT(DISTINCT mall_id) FROM ccf_first_round_user_shop_behavior;
-
-CREATE TABLE ccf_first_round_user_shop_distance_kurt
-AS
-SELECT t1.`shop_id`
-,t1.`category_id`
-,t1.`price`
-,t1.`mall_id`
-,t1.`shop_latitude`
-,t1.`shop_longitude`
-,t1.`latitude`
-,t1.`longitude`
-,t1.`distance`
-,t2.`cnt`
-,t2.`min_distance`
-,t2.`max_distance`
-,t2.`avg_distance`
-,POWER(t1.`distance`-t2.`avg_distance`,4) AS k4
-,POWER(t1.`distance`-t2.`avg_distance`,2) AS k2
-FROM ccf_first_round_user_shop_straightdistance t1
-LEFT JOIN ccf_first_round_user_shop_straightdistance_agg t2 ON t1.`shop_id`=t2.`shop_id`;
-
-SELECT * FROM ccf_first_round_user_shop_straightdistance_agg;
-
-SELECT * FROM ccf_first_round_user_shop_straightdistance;
-
-
-SELECT POWER(3,4) FROM DUAL;
-
-DROP TABLE ccf_first_round_user_shop_distance_kurt_shop;
-CREATE TABLE ccf_first_round_user_shop_distance_kurt_shop
-AS
-SELECT shop_id,AVG(k4) AS k,POWER(AVG(k2),2) AS s,AVG(k4)*1.0/POWER(AVG(k2),2) AS kurt
-FROM ccf_first_round_user_shop_distance_kurt
-GROUP BY shop_id;
-
-DROP TABLE ccf_first_round_user_shop_distance_kurt_category;
-CREATE TABLE ccf_first_round_user_shop_distance_kurt_category
-AS
-SELECT category_id,AVG(k4) AS k,POWER(AVG(k2),2) AS s,AVG(k4)*1.0/POWER(AVG(k2),2) AS kurt
-FROM ccf_first_round_user_shop_distance_kurt
-GROUP BY category_id;
-
-DROP TABLE ccf_first_round_user_shop_distance_kurt_mall;
-CREATE TABLE ccf_first_round_user_shop_distance_kurt_mall
-AS
-SELECT mall_id,AVG(k4) AS k,POWER(AVG(k2),2) AS s,AVG(k4)*1.0/POWER(AVG(k2),2) AS kurt
-FROM ccf_first_round_user_shop_distance_kurt
-GROUP BY mall_id;
-
-SELECT * FROM ccf_first_round_user_shop_distance_kurt_mall;
-
-
-
 SELECT 
 t1.`shop_id`
 ,t1.`category_id`
@@ -348,3 +283,97 @@ FROM
 LEFT JOIN
  `ccf_first_round_shop_info`   t1
 ON t1.shop_id=t2.shop_id;
+
+DROP TABLE IF EXISTS ccf_first_round_user_shop_straightdistance;
+CREATE TABLE ccf_first_round_user_shop_straightdistance
+AS
+SELECT 
+t2.user_id
+,t1.`shop_id`
+,t1.`category_id`
+,t1.`price`
+,t1.`mall_id`
+,t1.longitude AS shop_longitude
+,t1.latitude AS shop_latitude
+,t2.longitude
+,t2.latitude
+,ROUND(6378.138*2*ASIN(SQRT(POW(SIN( (t1.latitude*PI()/180-t2.latitude*PI()/180)/2),2)+COS(t1.latitude*PI()/180)*COS(t2.latitude*PI()/180)* POW(SIN( (t1.longitude*PI()/180-t2.longitude*PI()/180)/2),2)))*1000,2) AS distance
+FROM
+  `ccf_first_round_user_shop_behavior`  t2
+LEFT JOIN
+ `ccf_first_round_shop_info`   t1
+ON t1.shop_id=t2.shop_id;
+
+
+DROP TABLE if exists ccf_first_round_user_shop_straightdistance_agg;
+CREATE TABLE ccf_first_round_user_shop_straightdistance_agg
+AS
+SELECT shop_id,category_id,mall_id,COUNT(*),MIN(distance),MAX(distance),AVG(distance) 
+FROM ccf_first_round_user_shop_straightdistance 
+GROUP BY shop_id,category_id,mall_id;
+
+SELECT mall_id,COUNT(*),MIN(distance),MAX(distance),AVG(distance) 
+FROM ccf_first_round_user_shop_straightdistance 
+GROUP BY mall_id;
+
+SELECT COUNT(*),COUNT(DISTINCT user_id),COUNT(DISTINCT shop_id),COUNT(DISTINCT mall_id) FROM ccf_first_round_user_shop_behavior;
+
+drop table if exists  ccf_first_round_user_shop_distance_kurt;
+CREATE TABLE ccf_first_round_user_shop_distance_kurt
+AS
+SELECT t1.`shop_id`
+,t1.`category_id`
+,t1.`price`
+,t1.`mall_id`
+,t1.`shop_latitude`
+,t1.`shop_longitude`
+,t1.`latitude`
+,t1.`longitude`
+,t1.`distance`
+,t2.`cnt`
+,t2.`min_distance`
+,t2.`max_distance`
+,t2.`avg_distance`
+,POWER(t1.`distance`-t2.`avg_distance`,4) AS k4
+,POWER(t1.`distance`-t2.`avg_distance`,2) AS k2
+FROM ccf_first_round_user_shop_straightdistance t1
+LEFT JOIN ccf_first_round_user_shop_straightdistance_agg t2 ON t1.`shop_id`=t2.`shop_id`;
+
+SELECT * FROM ccf_first_round_user_shop_straightdistance_agg;
+
+SELECT * FROM ccf_first_round_user_shop_straightdistance;
+
+
+SELECT POWER(3,4) FROM DUAL;
+
+DROP TABLE if exists  ccf_first_round_user_shop_distance_kurt_shop;
+CREATE TABLE ccf_first_round_user_shop_distance_kurt_shop
+AS
+SELECT shop_id,AVG(k4) AS k,POWER(AVG(k2),2) AS s,AVG(k4)*1.0/POWER(AVG(k2),2) AS kurt
+FROM ccf_first_round_user_shop_distance_kurt
+GROUP BY shop_id;
+
+DROP TABLE if exists ccf_first_round_user_shop_distance_kurt_category;
+CREATE TABLE ccf_first_round_user_shop_distance_kurt_category
+AS
+SELECT category_id,AVG(k4) AS k,POWER(AVG(k2),2) AS s,AVG(k4)*1.0/POWER(AVG(k2),2) AS kurt
+FROM ccf_first_round_user_shop_distance_kurt
+GROUP BY category_id;
+
+DROP TABLE if exists ccf_first_round_user_shop_distance_kurt_mall;
+CREATE TABLE ccf_first_round_user_shop_distance_kurt_mall
+AS
+SELECT mall_id,AVG(k4) AS k,POWER(AVG(k2),2) AS s,AVG(k4)*1.0/POWER(AVG(k2),2) AS kurt
+FROM ccf_first_round_user_shop_distance_kurt
+GROUP BY mall_id;
+
+SELECT * FROM ccf_first_round_user_shop_distance_kurt_mall;
+
+
+SELECT COUNT(*),COUNT(DISTINCT shop_id),COUNT(DISTINCT bssid) FROM `ccf_first_round_user_shop_detail`
+COUNT(*)  COUNT(DISTINCT shop_id) COUNT(DISTINCT bssid)
+11075599  8477  399679
+
+CREATE TABLE ccf_first_round_user_shop_detail_agg
+AS
+SELECT shop_id,bssid,COUNT(*) cnt FROM `ccf_first_round_user_shop_detail` GROUP BY shop_id,bssid;
