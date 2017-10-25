@@ -52,7 +52,14 @@ shop_info.index = shop_info['shop_id']
 user_shop_behavior['mall_id'] = shop_info.loc[user_shop_behavior['shop_id'] ,]['mall_id'].tolist()
 user_shop_behavior.index = user_shop_behavior['mall_id']
 
+counter = 0
 def get_nearest(line):
+    global counter
+    counter = counter+1
+    if counter%1000 == 0:
+        print counter
+        print time.asctime(time.localtime(time.time()))
+
     # tmp_shops = user_shop_behavior[user_shop_behavior['mall_id'] == line[2]][['longitude', 'latitude', 'shop_id']].values
     tmp_shops = user_shop_behavior.loc[line[2],][['longitude', 'latitude', 'shop_id']].values
     shop_distance = [[get_distance_hav(line[4], line[5], shop[0], shop[1]), shop[2]] for shop in tmp_shops]
@@ -62,7 +69,7 @@ def get_nearest(line):
 
 if __name__ == "__main__":
 
-    dataset = evalset.values[:1000]
+    dataset = evalset.values
     pool = Pool()
     result = pool.map(get_nearest,dataset)
     pool.close()
