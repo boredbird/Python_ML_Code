@@ -65,7 +65,7 @@ for line in evalset.values:
 result = pd.DataFrame({'row_id':evalset.row_id,'shop_id':nearest})
 result.to_csv(r'E:\output\submit\BDCI_first_round_alg01_submit01.csv.csv',index=None)
 
-# score:0.0124
+# score:0.1694
 
 """
 线下验证
