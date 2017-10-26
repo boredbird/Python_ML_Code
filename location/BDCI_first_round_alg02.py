@@ -82,7 +82,7 @@ if __name__ == "__main__":
 # result = pd.DataFrame({'row_id':evalset.row_id,'shop_id':nearest})
 # result.to_csv(r'E:\output\submit\BDCI_first_round_alg02_submit01.csv.csv',index=None)
 
-# score:
+# score:0.6329
 
 """
 线下验证
