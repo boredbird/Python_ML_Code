@@ -29,6 +29,7 @@ for line in user_shop_hehavior.values:
     if pred_one == line[1]:
         right_count += 1
 print('acc:',right_count*1.0/len(user_shop_hehavior)) #线下验证
+# ('acc:', 0.8704691941670365)
 
 #预测
 preds = []
