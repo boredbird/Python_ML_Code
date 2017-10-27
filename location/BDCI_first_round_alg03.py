@@ -49,5 +49,5 @@ if __name__ == "__main__":
 
 # k:3 score:0.6569
 # k:5 score:0.6707
-# k:7 score:
+# k:7 score:0.6768
 # k:9 score:
