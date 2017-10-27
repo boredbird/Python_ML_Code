@@ -46,8 +46,7 @@ if __name__ == "__main__":
     result = pd.DataFrame(result)
     result.to_csv(r'E:\output\submit\BDCI_first_round_alg03_submit_k9.csv.csv',index=None)
 
-
 # k:3 score:0.6569
 # k:5 score:0.6707
 # k:7 score:0.6768
-# k:9 score:
+# k:9 score:0.6790

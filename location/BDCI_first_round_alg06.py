@@ -23,11 +23,67 @@ shop_info.index = shop_info['shop_id']
 user_shop_behavior['mall_id'] = shop_info.loc[user_shop_behavior['shop_id'] ,]['mall_id'].tolist()
 user_shop_behavior.index = user_shop_behavior['mall_id']
 
+# 训练好的规则
 wifi_to_shops = defaultdict(lambda : defaultdict(lambda :0))
 
+counter = 0
 def get_wifi_to_shop(line):
+    global counter
+    counter = counter+1
+    if counter%10000 == 0:
+        print counter
+        print time.asctime(time.localtime(time.time()))
+
     for var in line[5].split(';'):
-        for wifi in var.split('|'):
-            wifi_to_shops[wifi[0]][line[1]] += 1
+        wifi_to_shops[var.split('|')[0]][line[1]] += 1
 
 user_shop_behavior.apply(get_wifi_to_shop,axis=1)
+
+# 线下
+nearest = []
+print time.asctime(time.localtime(time.time()))
+counter = 0
+for line in user_shop_behavior.values:
+    counter = counter+1
+    if counter%1000 == 0:
+        print counter
+        print time.asctime(time.localtime(time.time()))
+
+    a = []
+    for var in line[5].split(';'):
+        a.extend(wifi_to_shops[var.split('|')[0]].items())
+
+    nearest.append(np.argmax(pd.DataFrame(a).groupby(0).sum()[1]))
+
+print 'ACC: ',sum(user_shop_behavior['shop_id'] == nearest)*1.0/nearest.__len__()
+print time.asctime(time.localtime(time.time()))
+# ACC:  0.659433311512
+
+# 线上预测
+nearest = []
+print time.asctime(time.localtime(time.time()))
+for line in evalset.values:
+    a = []
+    for var in line[6].split(';'):
+        a.extend(wifi_to_shops[var.split('|')[0]].items())
+
+    if a == []:
+        a = [('s_666',0),]
+
+    nearest.append(np.argmax(pd.DataFrame(a).groupby(0).sum()[1]))
+
+print time.asctime(time.localtime(time.time()))
+
+result = pd.DataFrame({'row_id':evalset['row_id'],'shop_id':nearest})
+result.to_csv(r'E:\output\submit\BDCI_first_round_alg06_submit01.csv.csv',index=None)
+
+if __name__ == "__main__":
+
+    dataset = evalset.values
+    pool = Pool()
+    result = pool.map(get_wifi_to_shop,dataset)
+    pool.close()
+    pool.join()
+
+    result = pd.DataFrame(result)
+    result.to_csv(r'E:\output\submit\BDCI_first_round_alg03_submit_k9.csv.csv',index=None)
