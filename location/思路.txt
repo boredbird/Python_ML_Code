@@ -26,3 +26,18 @@ shop < category < mall
 正负样本的构造：
 WiFi列表可以关联到的商铺 且该商铺在这个商场内
 >>>>>>> .theirs
+
+wifi
+    次数
+    个数
+    k=1,3,5
+wifi_to_shops
+    次数
+    个数
+
+eval_dataset
+    全部
+    k=1,3,5
+counter
+    次数
+    个数

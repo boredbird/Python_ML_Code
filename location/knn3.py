@@ -1,4 +1,5 @@
 # -*- coding:utf-8 -*-
+"""
 import csv
 import math
 import datetime
@@ -320,6 +321,7 @@ def training(trainfile = 'train.csv',testfile = 'test.csv',subfile = 'submission
 
 if __name__ =="__main__":
     training('train.csv', 'test.csv', 'submission.csv' )
+"""
 
 
 

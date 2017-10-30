@@ -54,5 +54,5 @@ for line in evalution.values:
 result = pd.DataFrame({'row_id':evalution.row_id,'shop_id':preds})
 result.fillna('s_666').to_csv(r'E:\output\submit\BDCI_first_round_alg11_submit02.csv.csv',index=None) #随便填的 这里还能提高不少
  
-# BDCI_first_round_alg11_submit01 : k:3 score:
+# BDCI_first_round_alg11_submit01 : k:3 score:0.8073
 # BDCI_first_round_alg11_submit02 : k:5 score:
