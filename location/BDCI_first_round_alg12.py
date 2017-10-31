@@ -27,9 +27,6 @@ for line in user_shop_behavior.values:
     for wifi in line[5].split(';'):
         wifi_time[wifi.split('|')[0]].append(line[2])
 
-wifi_id = []
-min_time = []
-max_time = []
 a = [[k,min(v),max(v)] for k,v in wifi_time.items()] # 399679
 
 b = pd.DataFrame(a,columns=['wifi_id','min_time','max_time'])
@@ -79,12 +76,58 @@ Out[44]:
 30    32754     32754     32754     32754
 """
 
+valid_wifi = b[b['day_diff']>0] # 139542
 
+# 训练规则
+wifi_to_shops = defaultdict(lambda : defaultdict(lambda :0)) # 54425
+valid_wifi.index = valid_wifi['wifi_id']
+
+print time.asctime(time.localtime(time.time()))
+for line in user_shop_behavior.values:
+    # 864
+    try:
+        wifi = sorted([wifi.split('|') for wifi in line[5].split(';') if wifi.split('|')[0] in  valid_wifi.index
+                       ],key=lambda x:int(x[1]),reverse=True)[0]
+        wifi_to_shops[wifi[0]][line[1]] = wifi_to_shops[wifi[0]][line[1]] + 1
+    except:
+        continue
+
+print time.asctime(time.localtime(time.time()))
+
+"""
+Mon Oct 30 22:55:09 2017
+Mon Oct 30 22:56:17 2017
+
+Mon Oct 30 23:05:52 2017
+Mon Oct 30 23:05:53 2017
+
+wifi_to_shops.items().__len__()
+Out[7]:
+54425
+"""
+
+# 线下验证
+right_count = 0
+for line in user_shop_behavior.values:
+    try:
+        wifi = sorted([wifi.split('|') for wifi in line[5].split(';') if wifi.split('|')[0] in valid_wifi.index
+                       ],key=lambda x:int(x[1]),reverse=True)[0]
+        counter = defaultdict(lambda : 0)
+        for k,v in wifi_to_shops[wifi[0]].items():
+            counter[k] += v
+        pred_one = sorted(counter.items(),key=lambda x:x[1],reverse=True)[0][0]
+        if pred_one == line[1]:
+            right_count += 1
+    except:
+        continue
+print('acc:',right_count*1.0/len(user_shop_behavior))
+# ('acc:', 0.8594333115117112)
+
+# 预测
 eval_counter = defaultdict(lambda: 0)
 for line in evalset.values:
     for wifi in line[6].split(';'):
         eval_counter[wifi.split('|')[0]] +=1
-
 
 print sorted([var for var in eval_counter.items()],key=lambda x:int(x[1]),reverse=True)[:100]
 """
@@ -121,3 +164,26 @@ b.groupby(day_diff).count()
 12    15589     15589     15589     15589
 13    34254     34254     34254     34254
 """
+
+"""
+剔除无效的wifi
+"""
+valid_eval_wifi = b[b['day_diff']>0] # 101094
+valid_eval_wifi.index = valid_eval_wifi['wifi_id']
+
+preds = []
+for line in evalset.values:
+    try:
+        wifi = sorted([wifi.split('|') for wifi in line[6].split(';') if wifi.split('|')[0] in valid_eval_wifi.index
+                       ],key=lambda x:int(x[1]),reverse=True)[0]
+        counter = defaultdict(lambda : 0)
+        for k,v in wifi_to_shops[wifi[0]].items():
+            counter[k] += v
+            pred_one = sorted(counter.items(),key=lambda x:x[1],reverse=True)[0][0]
+    except:
+        pred_one = 's_666'
+    preds.append(pred_one)
+
+result = pd.DataFrame({'row_id':evalset.row_id,'shop_id':preds})
+result.fillna('s_666').to_csv(r'E:\output\submit\BDCI_first_round_alg12_submit01.csv.csv',index=None)
+# score:
