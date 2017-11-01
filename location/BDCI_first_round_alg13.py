@@ -86,7 +86,6 @@ valid_wifi.index = valid_wifi['wifi_id']
 
 print time.asctime(time.localtime(time.time()))
 for line in user_shop_behavior.values:
-    # 864
     try:
         wifi = sorted([wifi.split('|') for wifi in line[5].split(';') if wifi.split('|')[0] in  valid_wifi.index
                        ],key=lambda x:int(x[1]),reverse=True)[0]
@@ -311,4 +310,27 @@ result = pd.DataFrame({'row_id':row_id,'shop_id':preds})
 result.to_csv(r'E:\output\submit\BDCI_first_round_alg13_submit01.csv.csv',index=None)
 # score:
 
+"""
+分mall查看准确率
+"""
+# 线下分mall验证
+# shop_info.loc['s_26',]['mall_id']
+mall_right_agg = defaultdict(lambda :0)
+mall_cnt_agg = defaultdict(lambda :0)
+for line in user_shop_behavior.values:
+    try:
+        wifi = sorted([wifi.split('|') for wifi in line[5].split(';') if wifi.split('|')[0] in valid_wifi.index
+                       ],key=lambda x:int(x[1]),reverse=True)[0]
+        counter = defaultdict(lambda : 0)
+        for k,v in wifi_to_shops[wifi[0]].items():
+            counter[k] += v
+        pred_one = sorted(counter.items(),key=lambda x:x[1],reverse=True)[0][0]
+        mall_cnt_agg[line[6]] += 1
+        if pred_one == line[1]:
+            mall_right_agg[line[6]] += 1
+    except:
+        continue
 
+mall_acc = defaultdict(lambda :0)
+for var in mall_cnt_agg.items():
+    mall_acc[var[0]] = mall_right_agg[var[0]]*1.0/mall_cnt_agg[var[0]]
