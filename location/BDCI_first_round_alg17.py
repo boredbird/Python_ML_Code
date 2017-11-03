@@ -1,6 +1,12 @@
 # -*- coding: utf-8 -*-
 """
-xgb，有效wifi
+xgb
+取消有效wifi的限制
+wifi的信号强度，改为 wifi信号强度的rank
+时间特征
+增加shop_id特征：取值0或者1
+根据经纬度规则判定的shop_id为1，其它为0
+根据wifi信号强度最强规则判定的shop_id为1，其它为0，alg10的结果作为输入
 """
 from sklearn import  preprocessing
 import pandas as pd
@@ -12,7 +18,7 @@ import xgboost as xgb
 # make a copy of original stdout route
 stdout_backup = sys.stdout
 # define the log file that receives your log info
-log_file = open(r'E:\output\gendata\BDCI_first_round_alg15_submit01.log', "w")
+log_file = open(r'E:\output\gendata\BDCI_first_round_alg17_submit01.log', "w")
 # redirect print output to log file
 sys.stdout = log_file
 
@@ -28,21 +34,7 @@ shop_info.index = shop_info['shop_id']
 
 user_shop_behavior['mall_id'] = shop_info.loc[user_shop_behavior['shop_id'] ,]['mall_id'].tolist()
 user_shop_behavior.index = user_shop_behavior['mall_id']
-
 evalset.index = evalset['mall_id']
-
-wifi_time = defaultdict(lambda: [])
-for line in user_shop_behavior.values:
-    for wifi in line[5].split(';'):
-        wifi_time[wifi.split('|')[0]].append(line[2])
-
-a = [[k,min(v),max(v)] for k,v in wifi_time.items()] # 399679
-b = pd.DataFrame(a,columns=['wifi_id','min_time','max_time'])
-day_diff = [(parser.parse(var[2])-parser.parse(var[1])).days for var in b.values]
-b['day_diff'] = day_diff
-
-valid_wifi = b[b['day_diff']>0] # 139542
-valid_wifi.index = valid_wifi['wifi_id']
 
 dataset =pd.concat([user_shop_behavior,evalset])
 mall_list = list(set(list(shop_info.mall_id)))
@@ -57,8 +49,7 @@ for mall in mall_list:
     for line in segment.values:
         wifi = {}
         for var in line[7].split(';'):
-            if var.split('|')[0] in  valid_wifi.index:
-                wifi[var.split('|')[0]] = int(var.split('|')[1])
+            wifi[var.split('|')[0]] = int(var.split('|')[1])
         wifi_list.append(wifi)
 
     train_ext = pd.concat([segment,pd.DataFrame(wifi_list)], axis=1)
@@ -97,7 +88,7 @@ for mall in mall_list:
     r = df_test[['row_id', 'shop_id']]
     result = pd.concat([result, r])
     result['row_id'] = result['row_id'].astype('int')
-    result.to_csv(r'E:\output\submit\BDCI_first_round_alg15_submit01.csv', index=False)
+    result.to_csv(r'E:\output\submit\BDCI_first_round_alg17_submit01.csv', index=False)
 
 ######################################################
 log_file.close()
