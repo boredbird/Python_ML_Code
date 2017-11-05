@@ -48,6 +48,9 @@ dataset =pd.concat([user_shop_behavior,evalset])
 mall_list = list(set(list(shop_info.mall_id)))
 result=pd.DataFrame()
 for mall in mall_list:
+    print '\n'
+    print '[PROC]', '=' * (40 - len(mall)/2), mall,'=' * (40 - len(mall)/2)
+    print '\n'
     wifi_list = []
     train_segment = user_shop_behavior.loc[mall]
     train_segment = train_segment.reset_index(drop=True)
@@ -105,3 +108,5 @@ log_file.close()
 sys.stdout = stdout_backup
 
 print "Now this will be presented on screen"
+
+# score: 0.9086

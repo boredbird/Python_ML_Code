@@ -109,3 +109,5 @@ log_file.close()
 sys.stdout = stdout_backup
 
 print "Now this will be presented on screen"
+
+# score: 0.9086
