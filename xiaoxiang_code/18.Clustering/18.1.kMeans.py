@@ -7,11 +7,9 @@ import sklearn.datasets as ds
 import matplotlib.colors
 from sklearn.cluster import KMeans
 
-
 def expand(a, b):
     d = (b - a) * 0.1
     return a-d, b+d
-
 
 if __name__ == "__main__":
     N = 400

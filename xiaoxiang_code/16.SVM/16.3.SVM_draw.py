@@ -58,6 +58,8 @@ if __name__ == "__main__":
         plt.scatter(x[clf.support_, 0], x[clf.support_, 1], edgecolors='k', facecolors='none', s=100, marker='o')   # 支撑向量
         z = clf.decision_function(grid_test)
         # print 'z = \n', z
+        print 'x1.shape:',x1.shape
+        print 'z.shape:', z.shape
         z = z.reshape(x1.shape)
         plt.contour(x1, x2, z, colors=list('kmrmk'), linestyles=['--', '-.', '-', '-.', '--'], linewidths=[1, 0.5, 1.5, 0.5, 1], levels=[-1, -0.5, 0, 0.5, 1])
         plt.xlim(x1_min, x1_max)

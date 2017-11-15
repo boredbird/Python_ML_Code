@@ -13,10 +13,10 @@ import scipy.optimize as opt
 import scipy
 import matplotlib.pyplot as plt
 from scipy.stats import norm, poisson
-# from scipy.interpolate import BarycentricInterpolator
-# from scipy.interpolate import CubicSpline
+from scipy.interpolate import BarycentricInterpolator
+from scipy.interpolate import CubicSpline
 import math
-# import seaborn
+import seaborn
 
 
 def residual(t, x, y):
@@ -39,8 +39,7 @@ def f(x):
     return y
 
 
-if __name__ == "__main__":
-    # # 开场白：
+if __name__ == "__main__" :
     # numpy是非常好用的数据包，如：可以这样得到这个二维数组
     # [[ 0  1  2  3  4  5]
     #  [10 11 12 13 14 15]
@@ -285,7 +284,7 @@ if __name__ == "__main__":
     # plt.plot(x, y, 'r-', x, y, 'go', linewidth=2, markersize=8)
     # plt.grid(True)
     # plt.show()
-
+    #
     mpl.rcParams['font.sans-serif'] = [u'SimHei']  #FangSong/黑体 FangSong/KaiTi
     mpl.rcParams['axes.unicode_minus'] = False
 
