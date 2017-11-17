@@ -20,7 +20,7 @@ runfile('C:/Users/Administrator/Desktop/untitled0.py', wdir='C:/Users/Administra
 e
 runfile('C:/Users/Administrator/Desktop/untitled0.py', wdir='C:/Users/Administrator/Desktop')
 a
-import KNN
+import kNN
 print("hjj said,\"aha?\"")
 "zhang"+"chunhui"
 "zhang" "chunhui"
