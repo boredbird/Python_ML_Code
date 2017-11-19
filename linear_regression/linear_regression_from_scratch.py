@@ -63,3 +63,4 @@ regr.fit(X[:,1].reshape(-1,1), y.ravel())
 plt.plot(y.ravel(), regr.intercept_+regr.coef_*X, label='Linear regression (Scikit-learn GLM)')
 
 
+
