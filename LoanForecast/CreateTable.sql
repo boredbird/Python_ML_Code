@@ -36,11 +36,3 @@ CREATE TABLE `t_loan_sum` (
   `loan_sum` double(12,10) DEFAULT NULL
 ) ENGINE=INNODB DEFAULT CHARSET=utf8 ;
 
-
-
-
-
-
-
-
-
