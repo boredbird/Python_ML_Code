@@ -14,8 +14,9 @@ def process_train_woe(infile_path=None,outfile_path=None,rst_path=None):
     data_path = infile_path
     cfg = config.config()
     cfg.load_file(config_path,data_path)
+    bin_var_list = [tmp for tmp in cfg.bin_var_list if tmp in list(cfg.dataset_train.columns)]
 
-    for var in [tmp for tmp in cfg.bin_var_list if tmp in list(cfg.dataset_train.columns)]:
+    for var in bin_var_list:
         # fill null
         cfg.dataset_train.loc[cfg.dataset_train[var].isnull(), (var)] = -1
 
@@ -28,7 +29,7 @@ def process_train_woe(infile_path=None,outfile_path=None,rst_path=None):
     print 'cfg.global_bt',cfg.global_bt
     print 'cfg.global_gt', cfg.global_gt
 
-    for var in [tmp for tmp in cfg.bin_var_list if tmp in list(cfg.dataset_train.columns)]:
+    for var in bin_var_list:
         rst.append(fp.proc_woe_continuous(cfg.dataset_train,var,cfg.global_bt,cfg.global_gt,cfg.min_sample,alpha=0.05))
 
     # process woe transformation of discrete variables
@@ -38,45 +39,52 @@ def process_train_woe(infile_path=None,outfile_path=None,rst_path=None):
         cfg.dataset_train.loc[cfg.dataset_train[var].isnull(), (var)] = 'missing'
         rst.append(fp.proc_woe_discrete(cfg.dataset_train,var,cfg.global_bt,cfg.global_gt,cfg.min_sample,alpha=0.05))
 
-    eval.eval_feature_detail(rst, outfile_path)
+    feature_detail = eval.eval_feature_detail(rst, outfile_path)
 
     print 'save woe transformation rule into pickle: \n',time.asctime(time.localtime(time.time()))
     output = open(rst_path, 'wb')
     pickle.dump(rst,output)
     output.close()
 
-process_train_woe(infile_path=r'E:\ScoreCard\cs_model\m1_rsx_cs_unify_model_features_201701.csv'
-                  ,outfile_path=r'E:\ScoreCard\cs_model\eval\cs_m1_pos_201701_features_detail.csv'
-                  ,rst_path='E:\\Code\\ScoreCard\gendata\cs_m1_pos_woe_rule_201701.pkl')
+    return feature_detail,rst
 
-process_train_woe(infile_path=r'E:\ScoreCard\cs_model\m1_rsx_cs_unify_model_features_201702.csv'
+# infile_path=r'E:\ScoreCard\cs_model\raw_data\m1_rsx_cs_unify_model_features_201701.csv'
+# a = pd.read_csv(infile_path)
+# b = a.loc[:10000,]
+# b.to_csv(r'E:\ScoreCard\cs_model\raw_data\m1_rsx_cs_unify_model_features_201701_tmp.csv')
+
+feature_detail01,rst01 = process_train_woe(infile_path=r'E:\ScoreCard\cs_model\raw_data\m1_rsx_cs_unify_model_features_201701.csv'
+                  ,outfile_path=r'E:\ScoreCard\cs_model\eval\cs_m1_pos_201701_features_detail.csv'
+                  ,rst_path=r'E:\ScoreCard\cs_model\gendata\cs_m1_pos_woe_rule_201701.pkl')
+
+feature_detail02,rst02 = process_train_woe(infile_path=r'E:\ScoreCard\cs_model\raw_data\m1_rsx_cs_unify_model_features_201702.csv'
                   ,outfile_path=r'E:\ScoreCard\cs_model\eval\cs_m1_pos_201702_features_detail.csv'
                   ,rst_path=r'E:\ScoreCard\cs_model\gendata\cs_m1_pos_woe_rule_201702.pkl')
 
-process_train_woe(infile_path=r'E:\ScoreCard\cs_model\m1_rsx_cs_unify_model_features_201703.csv'
+feature_detail03,rst03 = process_train_woe(infile_path=r'E:\ScoreCard\cs_model\raw_data\m1_rsx_cs_unify_model_features_201703.csv'
                   ,outfile_path=r'E:\ScoreCard\cs_model\eval\cs_m1_pos_201703_features_detail.csv'
                   ,rst_path=r'E:\ScoreCard\cs_model\gendata\cs_m1_pos_woe_rule_201703.pkl')
 
-process_train_woe(infile_path=r'E:\ScoreCard\cs_model\m1_rsx_cs_unify_model_features_201704.csv'
+feature_detail04,rst04 = process_train_woe(infile_path=r'E:\ScoreCard\cs_model\raw_data\m1_rsx_cs_unify_model_features_201704.csv'
                   ,outfile_path=r'E:\ScoreCard\cs_model\eval\cs_m1_pos_201704_features_detail.csv'
-                  ,rst_path='E:\\Code\\ScoreCard\gendata\cs_m1_pos_woe_rule_201704.pkl')
+                  ,rst_path=r'E:\ScoreCard\cs_model\gendata\cs_m1_pos_woe_rule_201704.pkl')
 
-process_train_woe(infile_path=r'E:\ScoreCard\cs_model\m1_rsx_cs_unify_model_features_201705.csv'
+feature_detail05,rst05 = process_train_woe(infile_path=r'E:\ScoreCard\cs_model\raw_data\m1_rsx_cs_unify_model_features_201705.csv'
                   ,outfile_path=r'E:\ScoreCard\cs_model\eval\cs_m1_pos_201705_features_detail.csv'
-                  ,rst_path='E:\\Code\\ScoreCard\gendata\cs_m1_pos_woe_rule_201705.pkl')
+                  ,rst_path=r'E:\ScoreCard\cs_model\gendata\cs_m1_pos_woe_rule_201705.pkl')
 
-process_train_woe(infile_path=r'E:\ScoreCard\cs_model\m1_rsx_cs_unify_model_features_201706.csv'
+feature_detail06,rst06 = process_train_woe(infile_path=r'E:\ScoreCard\cs_model\raw_data\m1_rsx_cs_unify_model_features_201706.csv'
                   ,outfile_path=r'E:\ScoreCard\cs_model\eval\cs_m1_pos_201706_features_detail.csv'
-                  ,rst_path='E:\\Code\\ScoreCard\gendata\cs_m1_pos_woe_rule_201706.pkl')
+                  ,rst_path=r'E:\ScoreCard\cs_model\gendata\cs_m1_pos_woe_rule_201706.pkl')
 
-process_train_woe(infile_path=r'E:\ScoreCard\cs_model\m1_rsx_cs_unify_model_features_201707.csv'
+feature_detail07,rst07 = process_train_woe(infile_path=r'E:\ScoreCard\cs_model\raw_data\m1_rsx_cs_unify_model_features_201707.csv'
                   ,outfile_path=r'E:\ScoreCard\cs_model\eval\cs_m1_pos_201707_features_detail.csv'
-                  ,rst_path='E:\\Code\\ScoreCard\gendata\cs_m1_pos_woe_rule_201707.pkl')
+                  ,rst_path=r'E:\ScoreCard\cs_model\gendata\cs_m1_pos_woe_rule_201707.pkl')
 
-process_train_woe(infile_path=r'E:\ScoreCard\cs_model\m1_rsx_cs_unify_model_features_201708.csv'
+feature_detail08,rst08 = process_train_woe(infile_path=r'E:\ScoreCard\cs_model\raw_data\m1_rsx_cs_unify_model_features_201708.csv'
                   ,outfile_path=r'E:\ScoreCard\cs_model\eval\cs_m1_pos_201708_features_detail.csv'
-                  ,rst_path='E:\\Code\\ScoreCard\gendata\cs_m1_pos_woe_rule_201708.pkl')
+                  ,rst_path=r'E:\ScoreCard\cs_model\gendata\cs_m1_pos_woe_rule_201708.pkl')
 
-process_train_woe(infile_path=r'E:\ScoreCard\cs_model\m1_rsx_cs_unify_model_features_201709.csv'
+feature_detail09,rst09 = process_train_woe(infile_path=r'E:\ScoreCard\cs_model\raw_data\m1_rsx_cs_unify_model_features_201709.csv'
                   ,outfile_path=r'E:\ScoreCard\cs_model\eval\cs_m1_pos_201709_features_detail.csv'
-                  ,rst_path='E:\\Code\\ScoreCard\gendata\cs_m1_pos_woe_rule_201709.pkl')
+                  ,rst_path=r'E:\ScoreCard\cs_model\gendata\cs_m1_pos_woe_rule_201709.pkl')
