@@ -102,7 +102,6 @@ def process_woe_trans(in_data_path=None,rst_path=None,out_path=None):
     cfg = config.config()
     cfg.load_file(config_path, data_path)
 
-    fp.change_feature_dtype(cfg.dataset_train, cfg.variable_type)
     for var in [tmp for tmp in cfg.bin_var_list if tmp in list(cfg.dataset_train.columns)]:
         # fill null
         cfg.dataset_train.loc[cfg.dataset_train[var].isnull(), (var)] = -1
@@ -110,6 +109,8 @@ def process_woe_trans(in_data_path=None,rst_path=None,out_path=None):
     for var in [tmp for tmp in cfg.discrete_var_list if tmp in list(cfg.dataset_train.columns)]:
         # fill null
         cfg.dataset_train.loc[cfg.dataset_train[var].isnull(), (var)] = 'missing'
+
+    fp.change_feature_dtype(cfg.dataset_train, cfg.variable_type)
 
     output = open(rst_path, 'rb')
     rst = pickle.load(output)
@@ -148,11 +149,14 @@ rst_path_list = [
 
 for i in range(rst_path_list.__len__()):
     for j in range(in_data_path_list.__len__()):
+        print '[START]',time.asctime(time.localtime(time.time()))
+        print 'Processing '+'cs_m1_pos_woe_transed_rule_20170'+str(i+1)+'_features_20170'+str(j+1)+':'
         woed_out_path =  'E:\\ScoreCard\\cs_model\\gendata\\' + 'cs_m1_pos_woe_transed_rule_20170'+str(i+1)\
                          +'_features_20170'+str(j+1)+'.csv'
         process_woe_trans(in_data_path=in_data_path_list[j]
                           ,rst_path=rst_path_list[i]
                           ,out_path=woed_out_path)
+        print '[END]', time.asctime(time.localtime(time.time()))
 
 """
 Train Logistic Regression Model
