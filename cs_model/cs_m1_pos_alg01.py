@@ -203,7 +203,8 @@ for i in range(dataset_path_list.__len__()):
     dataset_train = pd.read_csv(dataset_path)
     cfg = pd.read_csv(r'E:\Code\Python_ML_Code\cs_model\config\config_cs_model.csv')
     candidate_var_list = cfg[cfg['is_modelfeature'] == 1]['var_name']
-    b = [var for var in X_train.columns if sum(X_train[var].isnull()) == 0]
+
+    b = [var for var in dataset_train.columns if sum(dataset_train[var].isnull()) == 0]
     candidate_var_list = list(set(candidate_var_list).intersection(set(b)))
 
     X_train = dataset_train[candidate_var_list]
