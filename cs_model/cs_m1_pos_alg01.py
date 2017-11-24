@@ -147,7 +147,8 @@ rst_path_list = [
     r'E:\ScoreCard\cs_model\gendata\cs_m1_pos_woe_rule_201709.pkl'
 ]
 
-for i in range(rst_path_list.__len__()):
+# range(rst_path_list.__len__())
+for i in [7,8]:
     for j in range(in_data_path_list.__len__()):
         print '[START]',time.asctime(time.localtime(time.time()))
         print 'Processing '+'cs_m1_pos_woe_transed_rule_20170'+str(i+1)+'_features_20170'+str(j+1)+':'
@@ -189,6 +190,7 @@ c_list = []
 ks_list = []
 
 for i in range(dataset_path_list.__len__()):
+    print '[START]',time.asctime(time.localtime(time.time()))
     dataset_path = 'E:\\ScoreCard\\cs_model\\gendata\\' + dataset_path_list[i]
     df_coef_path = 'E:\\ScoreCard\\cs_model\\eval\\' + df_coef_path_list[i]
     pic_coefpath_title = 'cs_m1_pos_coef_path_rule_20170'+str(i+1)+'_features_20170'+str(i+1)
@@ -201,6 +203,8 @@ for i in range(dataset_path_list.__len__()):
     dataset_train = pd.read_csv(dataset_path)
     cfg = pd.read_csv(r'E:\Code\Python_ML_Code\cs_model\config\config_cs_model.csv')
     candidate_var_list = cfg[cfg['is_modelfeature'] == 1]['var_name']
+    b = [var for var in X_train.columns if sum(X_train[var].isnull()) == 0]
+    candidate_var_list = list(set(candidate_var_list).intersection(set(b)))
 
     X_train = dataset_train[candidate_var_list]
     y_train = dataset_train['target']
