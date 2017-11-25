@@ -189,7 +189,8 @@ df_coef_path_list = [
 c_list = []
 ks_list = []
 
-for i in range(dataset_path_list.__len__()):
+# range(dataset_path_list.__len__())
+for i in [3,4,5,6,7,8]:
     print '[START]',time.asctime(time.localtime(time.time()))
     dataset_path = 'E:\\ScoreCard\\cs_model\\gendata\\' + dataset_path_list[i]
     df_coef_path = 'E:\\ScoreCard\\cs_model\\eval\\' + df_coef_path_list[i]
