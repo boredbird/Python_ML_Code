@@ -39,14 +39,15 @@ uid
 ,SUM(discount) AS uid_cate_discount_sum
 ,SUM(qty) AS uid_cate_qty_sum
 ,AVG(qty) AS uid_cate_qty_avg
-,min(qty) as uid_cate_qty_min
-,max(qty) as uid_cate_qty_max
 ,AVG(price)	AS uid_cate_price_avg
 ,AVG(discount) AS uid_cate_discount_avg
+,min(qty) as uid_cate_qty_min
+,MIN(buy_time) AS uid_cate_buy_time_min
+,max(qty) as uid_cate_qty_max
+,MAX(buy_time) AS uid_cate_buy_time_max
 ,COUNT(DISTINCT qty) AS uid_cate_qty_cnt
 ,COUNT(DISTINCT cate_id) AS uid_cate_cate_cnt
-,MIN(buy_time) AS uid_cate_buy_time_min
-,MAX(buy_time) AS uid_cate_buy_time_max
+
 ,DATEDIFF(MAX(buy_time), MIN(buy_time)) AS uid_cate_buy_time_daydiff
 FROM `t_order`
 GROUP BY uid,cate_id;
@@ -57,16 +58,16 @@ AS
 SELECT 
 uid
 ,MIN(loan_time) AS uid_loan_time_min
-,MAX(loan_time) AS uid_loan_time_max
-,DATEDIFF(MAX(loan_time), MIN(loan_time)) AS uid_loan_time_daydiff
-,SUM(loan_amount) AS uid_loan_amount_sum
-,AVG(loan_amount) AS uid_loan_amount_avg
 ,MIN(loan_amount) AS uid_loan_amount_min
-,MAX(loan_amount) AS uid_loan_amount_max
 ,MIN(plannum) AS uid_plannum_min
+,MAX(loan_time) AS uid_loan_time_max
+,MAX(loan_amount) AS uid_loan_amount_max
 ,MAX(plannum) AS uid_plannum_max
-,AVG(plannum) AS uid_plannum_avg
+,SUM(loan_amount) AS uid_loan_amount_sum
 ,SUM(plannum) AS uid_plannum_sum
+,AVG(loan_amount) AS uid_loan_amount_avg
+,AVG(plannum) AS uid_plannum_avg
+,DATEDIFF(MAX(loan_time), MIN(loan_time)) AS uid_loan_time_daydiff
 FROM `t_loan`
 GROUP BY uid;
 
@@ -76,12 +77,12 @@ SELECT
 uid
 ,plannum
 ,MIN(loan_time) AS uid_plannum_loan_time_min
+,MIN(loan_amount) AS uid_plannum_loan_amount_min
+,MAX(loan_amount) AS uid_plannum_loan_amount_max
 ,MAX(loan_time) AS uid_plannum_loan_time_max
 ,DATEDIFF(MAX(loan_time), MIN(loan_time)) AS uid_plannum_loan_time_daydiff
 ,SUM(loan_amount) AS uid_plannum_loan_amount_sum
 ,AVG(loan_amount) AS uid_plannum_loan_amount_avg
-,MIN(loan_amount) AS uid_plannum_loan_amount_min
-,MAX(loan_amount) AS uid_plannum_loan_amount_max
 FROM `t_loan`
 GROUP BY uid,plannum;
 
@@ -312,12 +313,12 @@ SELECT
 sex
 ,COUNT(*) AS sex_cnt
 ,MIN(active_date) AS sex_active_date_min
+,MIN(LIMIT) AS sex_limit_min
 ,MAX(active_date) AS sex_active_date_max
+,MAX(LIMIT) AS sex_limit_max
+,AVG(LIMIT) AS sex_limit_avg
 ,DATEDIFF(MAX(active_date), MIN(active_date)) AS sex_active_date_daydiff
 ,SUM(LIMIT) AS sex_limit_sum
-,AVG(LIMIT) AS sex_limit_avg
-,MIN(LIMIT) AS sex_limit_min
-,MAX(LIMIT) AS sex_limit_max
 FROM `t_user`
 GROUP BY sex;
 
@@ -329,15 +330,15 @@ t2.sex
 ,SUM(price)  AS sex_price_sum
 ,SUM(discount) AS sex_discount_sum
 ,SUM(qty) AS sex_qty_sum
-,AVG(qty) AS sex_qty_avg
 ,MIN(qty) AS sex_qty_min
+,MIN(buy_time) AS sex_buy_time_min
 ,MAX(qty) AS sex_qty_max
+,MAX(buy_time) AS sex_buy_time_max
+,AVG(qty) AS sex_qty_avg
 ,AVG(price)	AS sex_price_avg
 ,AVG(discount) AS sex_discount_avg
 ,COUNT(DISTINCT qty) AS sex_qty_cnt
 ,COUNT(DISTINCT cate_id) AS sex_cate_cnt
-,MIN(buy_time) AS sex_buy_time_min
-,MAX(buy_time) AS sex_buy_time_max
 ,DATEDIFF(MAX(buy_time), MIN(buy_time)) AS sex_buy_time_daydiff
 FROM `t_order` t1
 LEFT JOIN t_user t2 ON t1.`uid`=t2.`uid`
@@ -352,15 +353,15 @@ t2.sex
 ,SUM(price)  AS uid_cate_price_sum
 ,SUM(discount) AS uid_cate_discount_sum
 ,SUM(qty) AS uid_cate_qty_sum
-,AVG(qty) AS uid_cate_qty_avg
 ,min(qty) as uid_cate_qty_min
+,MIN(buy_time) AS uid_cate_buy_time_min
 ,max(qty) as uid_cate_qty_max
+,MAX(buy_time) AS uid_cate_buy_time_max
+,AVG(qty) AS uid_cate_qty_avg
 ,AVG(price)	AS uid_cate_price_avg
 ,AVG(discount) AS uid_cate_discount_avg
 ,COUNT(DISTINCT qty) AS uid_cate_qty_cnt
 ,COUNT(DISTINCT cate_id) AS uid_cate_cate_cnt
-,MIN(buy_time) AS uid_cate_buy_time_min
-,MAX(buy_time) AS uid_cate_buy_time_max
 ,DATEDIFF(MAX(buy_time), MIN(buy_time)) AS uid_cate_buy_time_daydiff
 FROM `t_order` t1
 left join t_user t2 on t1.uid=t2.uid
@@ -461,13 +462,13 @@ SELECT
 cate_id
 ,count(*) as cate_id_order_cnt
 ,SUM(price)  AS cate_id_price_sum
+,AVG(price)	AS cate_id_price_avg
 ,SUM(discount) AS cate_id_discount_sum
+,AVG(discount) AS cate_id_discount_avg
 ,sum(qty) as cate_id_qty_sum
 ,avg(qty) as cate_id_qty_avg
 ,min(qty) as cate_id_qty_min
 ,max(qty) as cate_id_qty_max
-,AVG(price)	AS cate_id_price_avg
-,AVG(discount) AS cate_id_discount_avg
 ,COUNT(DISTINCT qty) AS cate_id_qty_cnt
 ,COUNT(DISTINCT cate_id) AS cate_id_cate_cnt
 ,MIN(buy_time) AS cate_id_buy_time_min
