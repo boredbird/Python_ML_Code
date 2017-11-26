@@ -1,4 +1,7 @@
 # -*- coding:utf-8 -*-
+"""
+每个变量的IV值波动，用于监测特征的有效性
+"""
 __author__ = 'maomaochong'
 import pickle
 import pandas as pd

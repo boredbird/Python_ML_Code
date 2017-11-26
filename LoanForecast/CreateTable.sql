@@ -114,3 +114,18 @@ GROUP BY uid
 ) tt
 GROUP BY cnt
  
+
+ user_order_features_on_uid 
+ user_order_features_on_uid_cate
+ user_loan_features_on_uid
+ user_loan_features_on_uid_plannum
+ user_click_features_on_uid
+ user_click_features_on_uid_pid
+ user_click_features_on_uid_param
+ user_click_features_on_uid_pid_param
+ sex_features_df
+ sex_features_df_on_plannum
+ cate_features_df
+
+# todo
+ df_daysdiff_

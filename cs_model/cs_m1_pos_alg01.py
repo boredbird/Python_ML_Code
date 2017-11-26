@@ -1,4 +1,13 @@
 # -*- coding:utf-8 -*-
+"""
+1、训练WOE规则
+2、分别按照各组样本作为WOE规则的训练样本，对其他组的样本进行WOE转换
+3、粗略设置逻辑回归超参数c的取值范围，根据模型系数进入路径与系数值的波动，正负，缩小c的取值范围，并粗略删除未入模的变量
+4、基于缩小范围后的c，重新训练模型
+# cs = l1_min_c(X_train, y_train, loss='log') * np.logspace(0, 9,200)
+# cs = l1_min_c(X_train, y_train, loss='log') * np.logspace(0, 6,50)
+# cs = np.logspace(-5, -2,50)
+"""
 __author__ = 'maomaochong'
 import pandas as pd
 import woe.config as config
@@ -190,7 +199,7 @@ c_list = []
 ks_list = []
 
 # range(dataset_path_list.__len__())
-for i in [3,4,5,6,7,8]:
+for i in range(dataset_path_list.__len__()):
     print '[START]',time.asctime(time.localtime(time.time()))
     dataset_path = 'E:\\ScoreCard\\cs_model\\gendata\\' + dataset_path_list[i]
     df_coef_path = 'E:\\ScoreCard\\cs_model\\eval\\' + df_coef_path_list[i]
@@ -202,6 +211,8 @@ for i in [3,4,5,6,7,8]:
                       +'_features_20170'+str(i+1)+'.png'
 
     dataset_train = pd.read_csv(dataset_path)
+    # dataset_train = dataset_train.loc[:50000,]
+
     cfg = pd.read_csv(r'E:\Code\Python_ML_Code\cs_model\config\config_cs_model.csv')
     candidate_var_list = cfg[cfg['is_modelfeature'] == 1]['var_name']
 
