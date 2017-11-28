@@ -2,7 +2,8 @@
 __author__ = 'maomaochong'
 import pandas as pd
 import  numpy as np
-from datetime import  date
+import datetime
+import time
 
 """
 dataset split:
@@ -64,6 +65,11 @@ df_tmp = dataset_order_set1[['uid','cate_id']]
 user_order_features['uid_cate_cnt'] = df_tmp.groupby(['uid']).agg({'cate_id': pd.Series.nunique}).cate_id
 
 user_order_features_on_uid = pd.DataFrame(user_order_features)
+datetime.datetime(user_order_features['uid_buy_time_max']) - datetime.datetime(user_order_features['uid_buy_time_min'])
+
+a = user_order_features['uid_buy_time_max'].apply(lambda s:time.strptime(s,"%Y-%m-%d"))
+b = user_order_features['uid_buy_time_min'].apply(lambda s:time.strptime(s,"%Y-%m-%d"))
+user_order_features['uid_buy_time_max'] = (datetime.datetime(*a[:3]) - datetime.datetime(*b[:3])).days
 
 # user order features on cate_id
 # group by uid,cate_id
