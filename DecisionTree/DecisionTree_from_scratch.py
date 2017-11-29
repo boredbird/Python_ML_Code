@@ -62,7 +62,7 @@ def chooseBestFeatureToSplit(dataSet):
         # get a set of unique values
         uniqueVals = set(featList)
         newEntropy = 0.0
-        for value in uniqueVals: # 遍历所有取值作为可能的分割点
+        for value in uniqueVals: # 遍历所有取值作为可能的分割点,每个离散值作为一个单独的分组
             subDataSet = splitDataSet(dataSet, i, value) # 只能筛选离散取值的变量
             prob = len(subDataSet) / float(len(dataSet))
             newEntropy += prob * calcShannonEnt(subDataSet)
@@ -130,3 +130,5 @@ def classify(inputTree, featLabels, testVec):
         classLabel = valueOfFeat
     return classLabel
 
+dataSet, labels = createDataSet()
+clf_tree = createTree(dataSet, labels)
