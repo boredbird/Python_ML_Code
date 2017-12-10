@@ -8,12 +8,9 @@ __author__ = 'maomaochong'
 # Email  : zouxy09@qq.com
 #################################################
 
-from numpy import *
-import matplotlib.pyplot as plt
-import time
 import sys
 sys.path.append('E:/Code/Python_ML_Code/SK')
-from LogisticsRegression import *
+from logistic_regression.LogisticsRegression import *
 
 def loadData():
 	train_x = []
