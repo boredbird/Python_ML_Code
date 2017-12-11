@@ -5,7 +5,6 @@
 #https://www.kaggle.com/jiweiliu
 #############################################################################################################
 
-
 from datetime import datetime
 from csv import DictReader
 from math import exp, log, sqrt
@@ -15,13 +14,12 @@ import pickle
 # TL; DR, the main training process starts on line: 250,
 # you may want to start reading the code from there
 
-
 ##############################################################################
 # parameters #################################################################
 ##############################################################################
 
 # A, paths
-train='../input/train.csv'
+train = r'E:\kaggle\springleaf-marketing-response\train.csv'
 test='../input/test.csv'#'vali_100.tsv'
 submission = 'ftrl1sub.csv'  # path of to be outputted submission file
 

@@ -13,42 +13,87 @@ as the name is changed.
 
  0. You just DO WHAT THE FUCK YOU WANT TO.
 '''
+
 from datetime import datetime
 from csv import DictReader
 from math import exp, log, sqrt
 
-# TL; DR, the main training process starts on line: 250,
+# TL; DR, the main training process starts on line: 282,
 # you may want to start reading the code from there
+
 
 ##############################################################################
 # parameters #################################################################
 ##############################################################################
 
 # A, paths
-# train = 'train_rev2'               # path to training file
-train = r'E:\kaggle\springleaf-marketing-response\train.csv'
-test = 'test_rev2'                 # path to testing file
+train = 'train_rev2'  # path to training file
+test = 'test_rev2'  # path to testing file
 submission = 'submission1234.csv'  # path of to be outputted submission file
 
 # B, model
 alpha = .1  # learning rate
-beta = 1.   # smoothing parameter for adaptive learning rate
-L1 = 1.     # L1 regularization, larger value means more regularized
-L2 = 1.     # L2 regularization, larger value means more regularized
+beta = 1.  # smoothing parameter for adaptive learning rate
+L1 = 1.  # L1 regularization, larger value means more regularized
+L2 = 1.  # L2 regularization, larger value means more regularized
 
 # C, feature/hash trick
-D = 2 ** 20             # number of weights to use
-interaction = False     # whether to enable poly2 feature interactions
+D = 2 ** 20  # number of weights to use
+do_interactions = False  # whether to enable poly2 feature interactions
 
 # D, training/validation
-epoch = 1       # learn training data for N passes
-holdafter = 9   # data after date N (exclusive) are used as validation
-holdout = None  # use every N training instance for holdout validation
+epoch = 1  # learn training data for N passes
+holdout = 100  # use every N training instance for holdout validation
 
 
 ##############################################################################
 # class, function, generator definitions #####################################
 ##############################################################################
+
+# each class below is a learning algorithm
+
+class logistic_regression(object):
+    ''' Classical logistic regression
+
+        This class (algorithm) is not used in this code, it is putted here
+        for a quick reference in hope to make the following (more complex)
+        algorithm more understandable.
+    '''
+
+    def __init__(self, alpha, D, interaction=False):
+        # parameters
+        self.alpha = alpha
+
+        # model
+        self.w = [0.] * D
+
+    def predict(self, x):
+        # parameters
+        alpha = self.alpha
+
+        # model
+        w = self.w
+
+        # wTx is the inner product of w and x
+        wTx = sum(w[i] for i in x)
+
+        # bounded sigmoid function, this is the probability of being clicked
+        return 1. / (1. + exp(-max(min(wTx, 35.), -35.)))
+
+    def update(self, x, p, y):
+        # parameter
+        alpha = self.alpha
+
+        # model
+        w = self.w
+
+        # gradient under logloss
+        g = p - y
+
+        # update w
+        for i in x:
+            w[i] += g * alpha
+
 
 class ftrl_proximal(object):
     ''' Our main algorithm: Follow the regularized leader - proximal
@@ -61,7 +106,7 @@ class ftrl_proximal(object):
         http://www.eecs.tufts.edu/~dsculley/papers/ad-click-prediction.pdf
     '''
 
-    def __init__(self, alpha, beta, L1, L2, D, interaction):
+    def __init__(self, alpha, beta, L1, L2, D, interaction=False):
         # parameters
         self.alpha = alpha
         self.beta = beta
@@ -78,7 +123,8 @@ class ftrl_proximal(object):
         # w: lazy weights
         self.n = [0.] * D
         self.z = [0.] * D
-        self.w = {}
+        self.w = [0.] * D  # use this for execution speed up
+        # self.w = {}  # use this for memory usage reduction
 
     def _indices(self, x):
         ''' A helper generator that yields the indices in x
@@ -87,23 +133,15 @@ class ftrl_proximal(object):
             code a bit cleaner when doing feature interaction.
         '''
 
-        # first yield index of the bias term
-        yield 0
+        for i in x:
+            yield i
 
-        # then yield the normal indices
-        for index in x:
-            yield index
-
-        # now yield interactions (if applicable)
         if self.interaction:
             D = self.D
             L = len(x)
-
-            x = sorted(x)
-            for i in xrange(L):
-                for j in xrange(i+1, L):
-                    # one-hot encode interactions with hash trick
-                    yield abs(hash(str(x[i]) + '_' + str(x[j]))) % D
+            for i in xrange(1, L):  # skip bias term, so we start at 1
+                for j in xrange(i + 1, L):
+                    yield (i * j) % D
 
     def predict(self, x):
         ''' Get probability estimation on x
@@ -124,16 +162,15 @@ class ftrl_proximal(object):
         # model
         n = self.n
         z = self.z
-        w = {}
+        w = self.w  # use this for execution speed up
+        # w = {}  # use this for memory usage reduction
 
         # wTx is the inner product of w and x
         wTx = 0.
         for i in self._indices(x):
             sign = -1. if z[i] < 0 else 1.  # get sign of z[i]
 
-            # build w on the fly using z and n, hence the name - lazy weights
-            # we are doing this at prediction instead of update time is because
-            # this allows us for not storing the complete w
+            # build w on the fly using z and n, hence the name - lazy weights -
             if sign * z[i] <= L1:
                 # w[i] vanishes due to L1 regularization
                 w[i] = 0.
@@ -143,7 +180,6 @@ class ftrl_proximal(object):
 
             wTx += w[i]
 
-        # cache the current w for update stage
         self.w = w
 
         # bounded sigmoid function, this is the probability estimation
@@ -168,7 +204,7 @@ class ftrl_proximal(object):
         # model
         n = self.n
         z = self.z
-        w = self.w
+        w = self.w  # no need to change this, it won't gain anything
 
         # gradient under logloss
         g = p - y
@@ -212,8 +248,8 @@ def data(path, D):
 
     for t, row in enumerate(DictReader(open(path))):
         # process id
-        ID = row['ID']
-        del row['ID']
+        ID = row['id']
+        del row['id']
 
         # process clicks
         y = 0.
@@ -222,15 +258,12 @@ def data(path, D):
                 y = 1.
             del row['click']
 
-        # extract date
-        # date = int(row['hour'][4:6])
-
         # turn hour really into hour, it was originally YYMMDDHH
-        # row['hour'] = row['hour'][6:]
+        row['hour'] = row['hour'][6:]
 
         # build x
-        x = []
-        for key in row:
+        x = [0]  # 0 is the index of the bias term
+        for key in sorted(row):  # sort is for preserving feature ordering
             value = row[key]
 
             # one-hot encode everything with hash trick
@@ -247,7 +280,7 @@ def data(path, D):
 start = datetime.now()
 
 # initialize ourselves a learner
-learner = ftrl_proximal(alpha, beta, L1, L2, D, interaction)
+learner = ftrl_proximal(alpha, beta, L1, L2, D, interaction=do_interactions)
 
 # start training
 for e in xrange(epoch):
@@ -255,41 +288,31 @@ for e in xrange(epoch):
     count = 0
 
     for t, ID, x, y in data(train, D):  # data is a generator
-        #    t: just a instance counter
-        # date: you know what this is
-        #   ID: id provided in original data
-        #    x: features
-        #    y: label (click)
+        #  t: just a instance counter
+        # ID: id provided in original data
+        #  x: features
+        #  y: label (click)
 
         # step 1, get prediction from learner
         p = learner.predict(x)
 
-        if (holdafter ) or (holdout and t % holdout == 0):
-            # step 2-1, calculate validation loss
-            #           we do not train with the validation data so that our
-            #           validation loss is an accurate estimation
-            #
-            # holdafter: train instances from day 1 to day N
-            #            validate with instances from day N + 1 and after
-            #
-            # holdout: validate with every N instance, train with others
+        if t % holdout == 0:
+            # step 2-1, calculate holdout validation loss
+            #           we do not train with the holdout data so that our
+            #           validation loss is an accurate estimation of
+            #           the out-of-sample error
             loss += logloss(p, y)
             count += 1
         else:
             # step 2-2, update learner with label (click) information
             learner.update(x, p, y)
 
-        count+=1
-        if count%1000==0:
-            #print count,loss/count
-            print('%s\tencountered: %d\tcurrent logloss: %f' % (
-                datetime.now(), count, loss/count))
-        if count>10000: # comment this out when you run it locally.
-            break
+        if t % 2500000 == 0 and t > 1:
+            print(' %s\tencountered: %d\tcurrent logloss: %f' % (
+                datetime.now(), t, loss / count))
 
-    print('Epoch %d finished, validation logloss: %f, elapsed time: %s' % (
-        e, loss/count, str(datetime.now() - start)))
-
+    print('Epoch %d finished, holdout logloss: %f, elapsed time: %s' % (
+        e, loss / count, str(datetime.now() - start)))
 
 ##############################################################################
 # start testing, and build Kaggle's submission file ##########################
