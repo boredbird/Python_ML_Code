@@ -27,7 +27,7 @@ effectiveannualrate,float64,1,1,0
 is_work_hr,object,0,1,0
 productcategoryname,object,0,1,0
 goods_type,object,0,1,0
-price,int64,1,1,0
+price,float64,1,1,0
 operatemode,int64,0,1,0
 province,object,0,1,0
 city,object,0,1,1
@@ -41,11 +41,11 @@ person_app_age,int64,1,1,1
 family_state,object,0,1,0
 education,object,0,1,1
 is_ssi,object,0,1,0
-certf_interval_years,int64,0,1,0
+certf_interval_years,int64,1,1,0
 cert_4_inital,object,0,1,1
-jobtime,int64,0,1,1
+jobtime,int64,1,1,1
 total_wk_exp,object,0,1,0
-last3year_workchange_num,int64,0,1,0
+last3year_workchange_num,int64,1,1,0
 house_type,object,0,1,0
 expense_month,int64,1,1,0
 other_income,int64,1,1,0
@@ -53,7 +53,7 @@ self_income,int64,1,1,0
 family_income,int64,1,1,0
 childrentotal,int64,1,1,0
 qqno_init,object,0,1,0
-qq_length,int64,0,1,1
+qq_length,int64,1,1,1
 email,object,0,1,0
 f_same_reg,object,0,1,0
 is_certid_province,object,0,1,0
