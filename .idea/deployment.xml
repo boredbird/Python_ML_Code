@@ -2,14 +2,7 @@
 <project version="4">
   <component name="PublishConfigData">
     <serverData>
-      <paths name="Copy of project-level server '10.83.2.132'">
-        <serverdata>
-          <mappings>
-            <mapping deploy="/" local="$PROJECT_DIR$" web="/" />
-          </mappings>
-        </serverdata>
-      </paths>
-      <paths name="Copy of project-level server 'VM_Ubuntu_Py2.7'">
+      <paths name="sftp_vm_ubuntu16.04">
         <serverdata>
           <mappings>
             <mapping local="$PROJECT_DIR$" web="/" />

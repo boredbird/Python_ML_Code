@@ -85,7 +85,7 @@ def single_process(var):
 feature_list = list(cfg.bin_var_list)
 feature_list.extend(list(cfg.discrete_var_list))
 
-for i in range(39,feature_list.__len__()):
+for i in range(89,feature_list.__len__()):
     try:
         result = single_process(feature_list[i])
     except Exception:

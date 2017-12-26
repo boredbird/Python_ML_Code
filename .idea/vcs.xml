@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="VcsDirectoryMappings">
-    <mapping directory="" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../EasyML" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../Python_Crawler" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../scikit-learn-book" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/../scikit-learn-book" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
 </project>
