@@ -85,20 +85,20 @@ class Corpus(object):
                 if len(arr) >= (self.d + 1):
                     yield (np.array([float(x) for x in arr[0:self.d]]), float(arr[self.d]))
 
-if __name__ == '__main__':
-    d = 4
-    corpus = Corpus("train.txt", d)
-    ftrl = FTRL(dim=d, l1=1.0, l2=1.0, alpha=0.1, beta=1.0)
-    ftrl.train(corpus, verbos=False, max_itr=100000, eta=0.01, epochs=100)
-    w = ftrl.w
-    print w
+# if __name__ == '__main__':
+d = 4
+corpus = Corpus("E:\\Code\\Python_ML_Code\\FTRL\\train.txt", d)
+ftrl = FTRL(dim=d, l1=1.0, l2=1.0, alpha=0.1, beta=1.0)
+ftrl.train(corpus, verbos=1, max_itr=100000, eta=0.01, epochs=100)
+w = ftrl.w # 保存FTRL用于后续增量训练
+print w
 
-    correct = 0
-    wrong = 0
-    for x, y in corpus:
-        y_hat = 1.0 if ftrl.predict(x) > 0.5 else 0.0
-        if y == y_hat:
-            correct += 1
-        else:
-            wrong += 1
-    print "correct ratio", 1.0 * correct / (correct + wrong)
+correct = 0
+wrong = 0
+for x, y in corpus:
+    y_hat = 1.0 if ftrl.predict(x) > 0.5 else 0.0
+    if y == y_hat:
+        correct += 1
+    else:
+        wrong += 1
+print "correct ratio", 1.0 * correct / (correct + wrong)

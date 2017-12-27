@@ -282,8 +282,8 @@ for e in xrange(epoch):
         count+=1
         if count%1000==0:
             #print count,loss/count
-            print('%s\tencountered: %d\tcurrent logloss: %f' % (
-                datetime.now(), count, loss/count))
+            print('%s\tencountered: %d\tloss: %d\tcurrent logloss: %f' % (
+                datetime.now(), count,loss, loss/count))
         if count>10000: # comment this out when you run it locally.
             break
 
