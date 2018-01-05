@@ -68,5 +68,3 @@ candidate_var_list = [
 
 reload(eval)
 eval.eval_feature_stability(civ_list, df_train, df_validation,candidate_var_list,out_path='E:\\feature_stability.csv')
-
-import ScoreCardModel

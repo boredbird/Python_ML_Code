@@ -1,11 +1,14 @@
-# coding=utf-8
-__author__ = "orisun"
-
+# -*- coding:utf-8 -*-
+__author__ = 'maomaochong'
 import numpy as np
-
+import pandas as pd
+import time
+import pickle
+import os
+from woe.eval import  compute_ks
+from woe.ftrl import *
 
 class LR(object):
-
     @staticmethod
     def fn(w, x):
         '''决策函数为sigmoid函数
@@ -26,13 +29,14 @@ class LR(object):
 
 
 class FTRL(object):
-
     def __init__(self, dim, l1, l2, alpha, beta, decisionFunc=LR):
         self.dim = dim
         self.decisionFunc = decisionFunc
         self.z = np.zeros(dim)
         self.n = np.zeros(dim)
         self.w = np.zeros(dim)
+        self.w_list = []
+        self.loss_list = []
         self.l1 = l1
         self.l2 = l2
         self.alpha = alpha
@@ -51,14 +55,16 @@ class FTRL(object):
         self.n += g * g
         return self.decisionFunc.loss(y, y_hat)
 
-    def train(self, trainSet, verbos=False, max_itr=100000000, eta=0.01, epochs=100):
+    def train(self, trainSet, verbos=False, max_itr=10000000000, eta=0.01, epochs=100):
         itr = 0
         n = 0
         while True:
             for x, y in trainSet:
                 loss = self.update(x, y)
-                if verbos:
+                if verbos and n%verbos==0:
                     print "itr=" + str(n) + "\tloss=" + str(loss)
+                    self.w_list.append(self.w)
+                    self.loss_list.append(loss)
                 if loss < eta:
                     itr += 1
                 else:
@@ -71,35 +77,34 @@ class FTRL(object):
                     print "reach max iteration", max_itr
                     return
 
+pkl_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\gendata\\LogisticRegression_Model\\'
+recent_path_list = os.listdir(pkl_path)
+i = 0
+recent_path = pkl_path + recent_path_list[i]
+output = open(recent_path, 'rb')
+ftrl = pickle.load(output)
+output.close()
 
-class Corpus(object):
+validation_dataset_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\gendata\\dataset_split_by_rows\\m1_rsx_cs_unify_model_features_201705_daily_24_woe_transed.csv'
+validation_dataset = pd.read_csv(validation_dataset_path)
 
-    def __init__(self, file, d):
-        self.d = d
-        self.file = file
+config_path = 'E:\\Code\\Python_ML_Code\\cs_model\\config\\config_cs_daily_model.csv'
+print('%s\tLOAD CONFIG FILE:\n%s' % (time.asctime(time.localtime(time.time())),config_path))
+cfg = pd.read_csv(config_path)
+candidate_var_list = cfg[cfg['is_modelfeature'] == 1]['var_name']
 
-    def __iter__(self):
-        with open(self.file, 'r') as f_in:
-            for line in f_in:
-                arr = line.strip().split()
-                if len(arr) >= (self.d + 1):
-                    yield (np.array([float(x) for x in arr[0:self.d]]), float(arr[self.d]))
+b = [var for var in validation_dataset.columns if sum(validation_dataset[var].isnull()) == 0]
+candidate_var_list = list(set(candidate_var_list).intersection(set(b)))
+
+X_train = validation_dataset[candidate_var_list].values
+y_train = validation_dataset['target'].values
+# y_hat = ftrl.predict(X_train)
+y_hat = 1.0 / (1.0 + np.exp(X_train.dot(ftrl.w)))
+ks = compute_ks(y_hat,y_train)
+print ks
+
+# y_hat = clf_l1_LR.predict_proba(X_train)[:,1]
+# loss = LR.loss(y_train,y_hat)/y_hat.__len__()
+# print loss
 
 
-# if __name__ == '__main__':
-d = 4
-corpus = Corpus("E:\\Code\\Python_ML_Code\\FTRL\\train.txt", d)
-ftrl = FTRL(dim=d, l1=1.0, l2=1.0, alpha=0.1, beta=1.0)
-ftrl.train(corpus, verbos=0, max_itr=100000, eta=0.01, epochs=100)
-w = ftrl.w # 保存FTRL用于后续增量训练
-print w
-
-correct = 0
-wrong = 0
-for x, y in corpus:
-    y_hat = 1.0 if ftrl.predict(x) > 0.5 else 0.0
-    if y == y_hat:
-        correct += 1
-    else:
-        wrong += 1
-print "correct ratio", 1.0 * correct / (correct + wrong)

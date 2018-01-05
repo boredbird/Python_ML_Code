@@ -68,8 +68,6 @@ y_train = dataset_train['target']
 c,ks = gs.grid_search_lr_c(X_train,y_train,df_coef_path,pic_coefpath_title,pic_coefpath
                            ,pic_performance_title,pic_performance)
 
-
-
 """
 Search for optimal hyper parametric C in LogisticRegression
 """
