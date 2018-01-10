@@ -7,6 +7,7 @@ import pickle
 import time
 import copy
 import woe.eval as eval
+import os
 
 def process_woe_trans(cfg=None,rst=None,dataset=None,out_path=None):
     # fill null
@@ -75,10 +76,16 @@ if __name__ == "__main__":
     feature_list = list(cfg.bin_var_list)
     feature_list.extend(list(cfg.discrete_var_list))
     rst = []
+    rst_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\gendata\\WOE_Rule\\'
+    rst_list = os.listdir(rst_path)
+    rst_list = [rst_list[i].split(".")[0] for i in range(rst_list.__len__())]
+
+    # feature_list_todo = list(set(feature_list)^set(rst_list))
+    feature_rst_list = list(set(feature_list).intersection(set(rst_list)))
 
     print('%s\tGET WOE RULE START' %(time.asctime(time.localtime(time.time()))))
-    for i in range(feature_list.__len__()):
-        var = feature_list[i]
+    for i in range(feature_rst_list.__len__()):
+        var = feature_rst_list[i]
         rst_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\gendata\\WOE_Rule\\' + var + '.pkl'
         output = open(rst_path, 'rb')
         civ = pickle.load(output)
@@ -86,16 +93,37 @@ if __name__ == "__main__":
         rst.append(civ[0])
     print('%s\tGET WOE RULE END' %(time.asctime(time.localtime(time.time()))))
 
-    outfile_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\features_detail\\cs_m1_pos_model_daily_features_detail.csv'
-    feature_detail = eval.eval_feature_detail(rst, outfile_path)
+    # outfile_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\features_detail\\cs_m1_pos_model_daily_features_detail.csv'
+    # feature_detail = eval.eval_feature_detail(rst, outfile_path)
 
     # do woe trans
-    for i in range(24):
+    # for j in range(24):
+    #     dataset_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\raw_data\\dataset_split_by_rows\\' \
+    #                    + 'm1_rsx_cs_unify_model_features_201705_daily_new_' \
+    #                    + str(j+1) + '.csv'
+    #     dataset = pd.read_csv(dataset_path)
+    #
+    #     # out_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\gendata\\dataset_split_by_rows\\' \
+    #     #            + 'm1_rsx_cs_unify_model_features_201705_daily_' \
+    #     #            + str(i+1) + '_woe_transed.csv'
+    #     # print('%s\tDO WOE TRANSFORMATION\n%s' % (time.asctime(time.localtime(time.time())),out_path))
+    #     # process_woe_trans(cfg,rst,dataset,out_path)
+    #
+    #     out_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\gendata\\dataset_split_by_rows\\' \
+    #                + 'm1_rsx_cs_unify_model_features_201705_daily_' \
+    #                + str(j+1) + '_woe01_transed.csv'
+    #     print('%s\tDO WOE TRANSFORMATION\n%s' % (time.asctime(time.localtime(time.time())),out_path))
+    #     process_woe01_trans(cfg,rst,dataset,out_path)
+
+    # 保留cs_cpd这个字段
+    for j in range(24):
         dataset_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\raw_data\\dataset_split_by_rows\\' \
-                       + 'm1_rsx_cs_unify_model_features_201705_daily_' \
-                       + str(i+1) + '.csv'
+                       + 'm1_rsx_cs_unify_model_features_201706_daily_new_' \
+                       + str(j+1) + '.csv'
         dataset = pd.read_csv(dataset_path)
 
+        dataset = dataset.rename(columns={'cpd':'cs_cpd'}) # rename
+        dataset['raw_cs_cpd'] = dataset['cs_cpd']
         # out_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\gendata\\dataset_split_by_rows\\' \
         #            + 'm1_rsx_cs_unify_model_features_201705_daily_' \
         #            + str(i+1) + '_woe_transed.csv'
@@ -103,7 +131,7 @@ if __name__ == "__main__":
         # process_woe_trans(cfg,rst,dataset,out_path)
 
         out_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\gendata\\dataset_split_by_rows\\' \
-                   + 'm1_rsx_cs_unify_model_features_201705_daily_' \
-                   + str(i+1) + '_woe01_transed.csv'
+                   + 'm1_rsx_cs_unify_model_features_201706_daily_' \
+                   + str(j+1) + '_woe01_transed_with_cpd.csv'
         print('%s\tDO WOE TRANSFORMATION\n%s' % (time.asctime(time.localtime(time.time())),out_path))
         process_woe01_trans(cfg,rst,dataset,out_path)

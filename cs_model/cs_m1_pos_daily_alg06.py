@@ -4,34 +4,12 @@ __author__ = 'maomaochong'
 以01变量输入训练模型
 """
 from sklearn.preprocessing import OneHotEncoder
-import numpy as np
 import pandas as pd
-import woe.config as config
-import woe.feature_process as fp
-import pickle
 import time
-import copy
-
-"""
-测试sklearn中的onehotencoder
-"""
-# enc = OneHotEncoder()
-# # X needs to contain only non-negative integers
-# enc.fit([[0, 0, 3], [1, 1, 0], [0, 2, 1], [1, 0, 2]])
-
-"""
-enc.fit([[0, 0.2, 3], [1, 1, 0], [0, 2, 1], [1, 0, 2]])
-Out[18]:
-OneHotEncoder(categorical_features='all', dtype=<type 'numpy.float64'>,
-       handle_unknown='error', n_values='auto', sparse=True)
-print enc.n_values_
-print enc.feature_indices_
-[2 3 4]
-[0 2 5 9]
-"""
-# print enc.n_values_
-# print enc.feature_indices_
-# enc.transform([[0, 1, 1]]).toarray()
+import pickle
+import os
+from woe.eval import  compute_ks
+from woe.ftrl import *
 
 """
 重新进行woe替换，不是用woe值而是正整数
@@ -40,16 +18,14 @@ print enc.feature_indices_
 """
 特征转换为01输入
 """
-import pandas as pd
-import time
-import pickle
-import os
-from woe.eval import  compute_ks
-from woe.ftrl import *
-from sklearn.svm import l1_min_c
-from multiprocessing import Pool
-
 if __name__ == '__main__':
+    # load
+    enc_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\gendata\\LogisticRegression_Model\\OneHotEncoder.pkl'
+    output = open(enc_path, 'rb')
+    enc = pickle.load(output)
+    output.close()
+    print 'LOAD OneHotEncoder PKL:\n',enc_path
+
     for i in range(1,23):
         # i = 0
         dataset_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\gendata\\dataset_split_by_rows\\' \
@@ -70,10 +46,17 @@ if __name__ == '__main__':
         X_train = dataset[candidate_var_list].values
         y_train = dataset['target'].values
 
-        enc = OneHotEncoder()
-        enc.fit(X_train)
-        print 'enc.n_values_:\n',enc.n_values_
-        print 'enc.feature_indices_:\n',enc.feature_indices_
+        # enc 初始化
+        # enc = OneHotEncoder()
+        # enc.fit(X_train)
+        # print 'enc.n_values_:\n',enc.n_values_
+        # print 'enc.feature_indices_:\n',enc.feature_indices_
+        #
+        # enc_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\gendata\\LogisticRegression_Model\\OneHotEncoder.pkl'
+        # print('%s\tDUMP MODEL FILE:\n%s' % (time.asctime(time.localtime(time.time())),enc_path))
+        # output = open(enc_path, 'wb')
+        # pickle.dump(enc,output)
+        # output.close()
 
         X_train_enc = enc.transform(X_train).toarray()
         trainset = zip(X_train_enc,y_train)
@@ -82,6 +65,7 @@ if __name__ == '__main__':
 
         # 初始化
         # ftrl = FTRL(dim=d, l1=0.01, l2=1.0, alpha=0.1, beta=1.0)
+        # ftrl = FTRL(dim=d, l1=0.01, l2=1.0, alpha=0.077426368, beta=1.0)
 
         # load
         pkl_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\gendata\\LogisticRegression_Model\\'
@@ -90,6 +74,7 @@ if __name__ == '__main__':
         output = open(recent_path, 'rb')
         ftrl = pickle.load(output)
         output.close()
+        print 'LOAD FTRL MODEL:\n',recent_path
 
         # batch train ftrl model
         print('%s\tFTRL MODEL TRAINING START:' % (time.asctime(time.localtime(time.time()))))
@@ -109,3 +94,12 @@ if __name__ == '__main__':
         output.close()
 
 
+"""
+init:
+Sun Jan 07 13:05:12 2018	DUMP MODEL FILE:
+E:\ScoreCard\cs_model\cs_m1_pos_model_daily\gendata\LogisticRegression_Model\ftrl_20180107130512.pkl
+
+init:
+Mon Jan 08 10:08:57 2018	DUMP MODEL FILE:
+E:\ScoreCard\cs_model\cs_m1_pos_model_daily\gendata\LogisticRegression_Model\ftrl_20180108100857.pkl
+"""

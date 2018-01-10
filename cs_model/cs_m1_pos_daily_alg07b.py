@@ -35,7 +35,7 @@ if __name__ == '__main__':
     i = 0
     dataset_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\gendata\\dataset_split_by_rows\\' \
                    + 'm1_rsx_cs_unify_model_features_201705_daily_' \
-                   + str(i+1) + '_woe01_transed.csv'
+                   + str(i+1) + '_woe_transed.csv'
 
     print('%s\tLOAD DATASET FILE:\n%s' % (time.asctime(time.localtime(time.time())),dataset_path))
     dataset = pd.read_csv(dataset_path)
@@ -51,25 +51,18 @@ if __name__ == '__main__':
     X_train = dataset[candidate_var_list].values
     y_train = dataset['target'].values
 
-    enc = OneHotEncoder()
-    enc.fit(X_train)
-    print 'enc.n_values_:\n',enc.n_values_
-    print 'enc.feature_indices_:\n',enc.feature_indices_
-
-    X_train_enc = enc.transform(X_train).toarray()
-
-    d = X_train_enc.shape[1]
+    d = X_train.shape[1]
     alpha_list = np.logspace(0, -5,10)
-    l1_list = l1_min_c(X_train_enc, y_train, loss='log') * np.logspace(0, 6,10)
+    l1_list = l1_min_c(X_train, y_train, loss='log') * np.logspace(0, 6,10)
     print 'alpha_list:\n',alpha_list
     print 'l1_list:\n',l1_list
     ks_avg_list = []
     params_list = []
     for l1 in l1_list:
         for alpha in alpha_list:
-            params_list.append((X_train_enc,y_train,d,l1,alpha))
+            params_list.append((X_train,y_train,d,l1,alpha))
 
-    pool = Pool(processes=4)
+    pool = Pool(processes=8)
     ks_avg_list = pool.map(warm_up,params_list)
     pool.close()
     pool.join()

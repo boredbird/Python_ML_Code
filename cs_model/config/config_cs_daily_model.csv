@@ -4,6 +4,7 @@ putout_date,object,0,0,0
 state_date,object,0,0,0
 customerid,object,0,0,0
 acct_loan_no,object,0,0,0
+raw_cs_cpd,int64,0,0,0
 cs_cpd,int64,1,1,1
 inter3_count,int64,1,1,0
 chexiao_count,int64,1,1,0

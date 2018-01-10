@@ -33,7 +33,7 @@ def splitByLineCount(filename,count):
 
 
 if __name__ == "__main__":
-    dataset_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\raw_data\\' + 'm1_rsx_cs_unify_model_features_201705_daily.csv'
+    dataset_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\raw_data\\' + 'm1_rsx_cs_unify_model_features_201706_daily_new.csv'
     print time.asctime(time.localtime(time.time())),'\t BEGIN'
     splitByLineCount(dataset_path,500000)
     print time.asctime(time.localtime(time.time())),'\t END'
