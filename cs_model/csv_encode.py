@@ -146,3 +146,26 @@ print('%s\tGET WOE RULE END' %(time.asctime(time.localtime(time.time()))))
 
 outfile_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model_daily\\features_detail\\cs_m1_pos_model_daily_features_detail_utf8.csv'
 feature_detail = eval_feature_detail(rst, outfile_path)
+
+
+
+
+
+# 日模型feature detail 中文编码问题
+rst_path = r'E:\ScoreCard\cs_model\cs_m1_pos_model\gendata\WOE_Rule\cs_m1_pos_woe_rule_201711.pkl'
+output = open(rst_path, 'rb')
+rst = pickle.load(output)
+output.close()
+
+outfile_path = 'E:\\ScoreCard\\cs_model\\cs_m1_pos_model\\features_detail\\cs_m1_pos_201711_features_detail_utf8.csv'
+feature_detail = eval_feature_detail(rst, outfile_path)
+
+
+# 日模型feature detail 中文编码问题
+rst_path = r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201711.pkl'
+output = open(rst_path, 'rb')
+rst = pickle.load(output)
+output.close()
+
+outfile_path = 'E:\\ScoreCard\\cs_model\\cs_m1_xcash_model\\features_detail\\cs_m1_xcash_201711_features_detail_utf8.csv'
+feature_detail = eval_feature_detail(rst, outfile_path)

@@ -1,5 +1,8 @@
 # -*- coding:utf-8 -*-
 __author__ = 'maomaochong'
+"""
+以0308为训练集
+"""
 import pandas as pd
 import numpy as np
 import matplotlib.pyplot as plt
@@ -222,14 +225,14 @@ def grid_search_lr_c_main(params):
     validation_cols_keep.append('target')
     validation_dataset_list = []
 
-    validation_dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f0308_woed.csv'
+    validation_dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_910_woed.csv'
     validation_dataset = pd.read_csv(validation_dataset_path)
     # fillna
     for var in candidate_var_list:
         validation_dataset.loc[validation_dataset[var].isnull(), (var)] = 0
     validation_dataset_list.append(validation_dataset[validation_cols_keep])
 
-    validation_dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f910_woed.csv'
+    validation_dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_1112_woed.csv'
     validation_dataset = pd.read_csv(validation_dataset_path)
     # fillna
     for var in candidate_var_list:
@@ -349,13 +352,11 @@ if __name__ == '__main__':
 
     config_path = 'E:\\Code\\Python_ML_Code\\cs_model\\config\\config_cs_model_pos_m2.csv'
 
-    # dataset = pd.read_csv(pos_path2)
-    # dataset[dataset['state_date']<'2017-12-19'].to_csv(pos_path2,index=False)
     # feature_detail,rst = process_train_woe(infile_path=pos_path2
     #                                        ,outfile_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\features_detail\cs_m2_pos_1112_features_detail.csv'
     #                                        ,rst_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112.pkl')
 
-    # rst_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112.pkl'
+    rst_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112.pkl'
     # outfile_path3=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f0308_woed.csv'
     # process_woe_trans(pos_path3,rst_path,outfile_path3)
     
@@ -365,40 +366,45 @@ if __name__ == '__main__':
     # outfile_path2=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f1112_woed.csv'
     # process_woe_trans(pos_path2,rst_path,outfile_path2)
     
-    print '###################################v10##############################################'
+    print '###################################v6##############################################'
     params = {}
-    params['dataset_path'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f1112_woed.csv'
+    params['dataset_path'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_0308_woed.csv'
     params['config_path'] = r'E:\Code\Python_ML_Code\cs_model\config\config_cs_model_pos_m2.csv'
 
-    params['df_coef_path'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\eval\cs_m2_pos_f1112_v10.csv'
-    params['pic_coefpath'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\eval\cs_m2_pos_coef_path_f1112_v10.png'
-    params['pic_performance'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\eval\cs_m2_pos_performance_path_f1112_v10.png'
-    params['pic_coefpath_title'] = 'cs_m2_pos_coef_path_f1112_v10'
-    params['pic_performance_title'] = 'cs_m2_pos_performance_path_f1112_v10'
+    params['df_coef_path'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\eval\cs_m2_pos_f0308_v6.csv'
+    params['pic_coefpath'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\eval\cs_m2_pos_coef_path_f0308_v6.png'
+    params['pic_performance'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\eval\cs_m2_pos_performance_path_f0308_v6.png'
+    params['pic_coefpath_title'] = 'cs_m2_pos_coef_path_f0308_v6'
+    params['pic_performance_title'] = 'cs_m2_pos_performance_path_f0308_v6'
 
     params['var_list_specfied'] = ['city'
                             ,'person_app_age'
-                            ,'due_periods_ratio'
-                            ,'over_due_value'
+                            ,'customerservicerates'
                             ,'most_contact_3m'
-                            ,'csfq'
+                            ,'lost'
+                            ,'dk_ratio'
+                            ,'ptp_ratio'
+                            ,'max_cpd'
                             ,'recent_contact_day'
-                            ,'seq_delay_days'
-                            ,'cert_4_inital']
+                            ,'cert_4_inital'
+                            ,'incm_times'
+                            ,'due_contact_ratio'
+                            ,'price'
+                            ,'finish_periods_ratio']
     params['cs'] = np.logspace(-6, -1,30)
     for key,value in params.items():
         print key,': ',value
     grid_search_lr_c_main(params)
 
-    fit_single_lr(dataset_path=params['dataset_path']
-                  ,config_path=params['config_path']
-                  ,var_list_specfied=params['var_list_specfied']
-                  ,out_model_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\LogisticRegression_Model\cs_m2_pos_clf_20171112.pkl')
-
-    proc_validattion(dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f0308_woed.csv'
-                     ,config_path=params['config_path']
-                     ,model_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\LogisticRegression_Model\cs_m2_pos_clf_20171112.pkl')
-
-    proc_validattion(dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f910_woed.csv'
-                     ,config_path=params['config_path']
-                     ,model_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\LogisticRegression_Model\cs_m2_pos_clf_20171112.pkl')
+    # fit_single_lr(dataset_path=params['dataset_path']
+    #               ,config_path=params['config_path']
+    #               ,var_list_specfied=params['var_list_specfied']
+    #               ,out_model_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\LogisticRegression_Model\cs_m2_pos_clf_20171112.pkl')
+    #
+    # proc_validattion(dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f0308_woed.csv'
+    #                  ,config_path=params['config_path']
+    #                  ,model_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\LogisticRegression_Model\cs_m2_pos_clf_20171112.pkl')
+    #
+    # proc_validattion(dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f910_woed.csv'
+    #                  ,config_path=params['config_path']
+    #                  ,model_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\LogisticRegression_Model\cs_m2_pos_clf_20171112.pkl')

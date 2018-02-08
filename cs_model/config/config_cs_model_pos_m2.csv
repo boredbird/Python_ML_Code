@@ -46,7 +46,7 @@ is_ssi,object,0,1,1
 certf_interval_years,int64,1,1,1
 cert_4_inital,object,0,1,1
 jobtime,int64,1,1,1
-total_wk_exp,int64,1,1,1
+total_wk_exp,object,0,1,1
 last3year_workchange_num,int64,1,1,1
 house_type,object,0,1,1
 expense_month,int64,1,1,1

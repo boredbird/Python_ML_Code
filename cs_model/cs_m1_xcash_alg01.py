@@ -18,7 +18,7 @@ from woe.eval import  compute_ks
 """
 def process_train_woe(infile_path=None,outfile_path=None,rst_path=None):
     print 'run into process_train_woe: \n',time.asctime(time.localtime(time.time()))
-    config_path = 'E:\\Code\\Python_ML_Code\\cs_model\\config\\config_cs_model_pos_m2.csv'
+    config_path = 'E:\\Code\\Python_ML_Code\\cs_model\\config\\config_cs_model_xcash_m1.csv'
     data_path = infile_path
     cfg = config.config()
     cfg.load_file(config_path,data_path)
@@ -36,16 +36,19 @@ def process_train_woe(infile_path=None,outfile_path=None,rst_path=None):
     print 'process woe transformation of continuous variables: \n',time.asctime(time.localtime(time.time()))
     print 'cfg.global_bt',cfg.global_bt
     print 'cfg.global_gt', cfg.global_gt
+    print 'min_sample_pct:',0.04
+    print 'alpha:',0.02
+    cfg.min_sample = int(cfg.dataset_len * 0.04)
 
     for var in bin_var_list:
-        rst.append(fp.proc_woe_continuous(cfg.dataset_train,var,cfg.global_bt,cfg.global_gt,cfg.min_sample,alpha=0.05))
+        rst.append(fp.proc_woe_continuous(cfg.dataset_train,var,cfg.global_bt,cfg.global_gt,cfg.min_sample,alpha=0.02))
 
     # process woe transformation of discrete variables
     print 'process woe transformation of discrete variables: \n',time.asctime(time.localtime(time.time()))
     for var in [tmp for tmp in cfg.discrete_var_list if tmp in list(cfg.dataset_train.columns)]:
         # fill null
         cfg.dataset_train.loc[cfg.dataset_train[var].isnull(), (var)] = 'missing'
-        rst.append(fp.proc_woe_discrete(cfg.dataset_train,var,cfg.global_bt,cfg.global_gt,cfg.min_sample,alpha=0.05))
+        rst.append(fp.proc_woe_discrete(cfg.dataset_train,var,cfg.global_bt,cfg.global_gt,cfg.min_sample,alpha=0.02))
 
     feature_detail = eval.eval_feature_detail(rst, outfile_path)
 
@@ -62,7 +65,7 @@ def process_train_woe(infile_path=None,outfile_path=None,rst_path=None):
 进行WOE转换
 """
 def process_woe_trans(in_data_path=None,rst_path=None,out_path=None):
-    config_path = 'E:\\Code\\Python_ML_Code\\cs_model\\config\\config_cs_model_pos_m2.csv'
+    config_path = 'E:\\Code\\Python_ML_Code\\cs_model\\config\\config_cs_model_xcash_m1.csv'
     data_path = in_data_path
     cfg = config.config()
     cfg.load_file(config_path, data_path)
@@ -222,14 +225,14 @@ def grid_search_lr_c_main(params):
     validation_cols_keep.append('target')
     validation_dataset_list = []
 
-    validation_dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f0308_woed.csv'
+    validation_dataset_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201711_f201709_woed.csv'
     validation_dataset = pd.read_csv(validation_dataset_path)
     # fillna
     for var in candidate_var_list:
         validation_dataset.loc[validation_dataset[var].isnull(), (var)] = 0
     validation_dataset_list.append(validation_dataset[validation_cols_keep])
 
-    validation_dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f910_woed.csv'
+    validation_dataset_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201711_f201710_woed.csv'
     validation_dataset = pd.read_csv(validation_dataset_path)
     # fillna
     for var in candidate_var_list:
@@ -273,7 +276,7 @@ def fit_single_lr(dataset_path,config_path,var_list_specfied,out_model_path):
     X_train = dataset_train[dataset_train.target >=0][candidate_var_list]
     y_train = dataset_train[dataset_train.target >=0]['target']
 
-    c = 0.01
+    c = 0.02
     print 'c:',c
     clf_lr_a = LogisticRegression(C=c, penalty='l1', tol=0.01,class_weight='balanced')
 
@@ -329,76 +332,116 @@ def proc_validattion(dataset_path,config_path,model_path):
     return ks
 
 if __name__ == '__main__':
-    # dataset_path1 = 'E:\\ScoreCard\\cs_model\\cs_m2_pos_model\\raw_data\\zdy_m2_910_poscash_cs_BASE_V1.csv'
-    # dataset1 = pd.read_csv(dataset_path1)
-    pos_path1 = 'E:\\ScoreCard\\cs_model\\cs_m2_pos_model\\raw_data\\zdy_m2_910_poscash_cs_BASE_V1_pos.csv'
-    # dataset1[dataset1['sub_product_type']==0].to_csv(pos_path1,index=False)
-    # print dataset_path1,'\n',dataset1.groupby('sub_product_type').count().iloc[:,1]
-    #
-    # dataset_path2 = 'E:\\ScoreCard\\cs_model\\cs_m2_pos_model\\raw_data\\zdy_m2_1112_poscash_cs_BASE_V1.csv'
-    # dataset2 = pd.read_csv(dataset_path2)
-    pos_path2 = 'E:\\ScoreCard\\cs_model\\cs_m2_pos_model\\raw_data\\zdy_m2_1112_poscash_cs_BASE_V1_pos.csv'
-    # dataset2[dataset2['sub_product_type']==0].to_csv(pos_path2,index=False)
-    # print dataset_path2,'\n',dataset2.groupby('sub_product_type').count().iloc[:,1]
-    #
-    # dataset_path3 = 'E:\\ScoreCard\\cs_model\\cs_m2_pos_model\\raw_data\\zdy_m2_0308_poscash_cs_BASE_V1.csv'
-    # dataset3 = pd.read_csv(dataset_path3)
-    pos_path3 = 'E:\\ScoreCard\\cs_model\\cs_m2_pos_model\\raw_data\\zdy_m2_0308_poscash_cs_BASE_V1_pos.csv'
-    # dataset3[dataset3['sub_product_type']==0].to_csv(pos_path3,index=False)
-    # print dataset_path3,'\n',dataset3.groupby('sub_product_type').count().iloc[:,1]
+    dataset_path1 = 'E:\\ScoreCard\\cs_model\\cs_m1_xcash_model\\raw_data\\cs_m1_xcash_model_features_201709.csv'
+    dataset_path2 = 'E:\\ScoreCard\\cs_model\\cs_m1_xcash_model\\raw_data\\cs_m1_xcash_model_features_201710.csv'
+    dataset_path3 = 'E:\\ScoreCard\\cs_model\\cs_m1_xcash_model\\raw_data\\cs_m1_xcash_model_features_201711.csv'
 
-    config_path = 'E:\\Code\\Python_ML_Code\\cs_model\\config\\config_cs_model_pos_m2.csv'
+    config_path = 'E:\\Code\\Python_ML_Code\\cs_model\\config\\config_cs_model_xcash_m1.csv'
 
-    # dataset = pd.read_csv(pos_path2)
-    # dataset[dataset['state_date']<'2017-12-19'].to_csv(pos_path2,index=False)
-    # feature_detail,rst = process_train_woe(infile_path=pos_path2
-    #                                        ,outfile_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\features_detail\cs_m2_pos_1112_features_detail.csv'
-    #                                        ,rst_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112.pkl')
+    # dataset = pd.read_csv(dataset_path1)
+    # feature_detail,rst = process_train_woe(infile_path=dataset_path1
+    #                                        ,outfile_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\features_detail\cs_m1_xcash_201709_features_detail.csv'
+    #                                        ,rst_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201709.pkl')
+    # dataset = pd.read_csv(dataset_path2)
+    # feature_detail,rst = process_train_woe(infile_path=dataset_path2
+    #                                        ,outfile_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\features_detail\cs_m1_xcash_201710_features_detail.csv'
+    #                                        ,rst_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201710.pkl')
+    # dataset = pd.read_csv(dataset_path3)
+    # feature_detail,rst = process_train_woe(infile_path=dataset_path3
+    #                                        ,outfile_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\features_detail\cs_m1_xcash_201711_features_detail_a002_mspct004.csv'
+    #                                        ,rst_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201711_a002_mspct004.pkl')
 
-    # rst_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112.pkl'
-    # outfile_path3=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f0308_woed.csv'
-    # process_woe_trans(pos_path3,rst_path,outfile_path3)
-    
-    # outfile_path1=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f910_woed.csv'
-    # process_woe_trans(pos_path1,rst_path,outfile_path1)
-    
-    # outfile_path2=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f1112_woed.csv'
-    # process_woe_trans(pos_path2,rst_path,outfile_path2)
-    
-    print '###################################v10##############################################'
+    # rst_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201709.pkl'
+    # outfile_path1=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201709_f201709_woed.csv'
+    # process_woe_trans(dataset_path1,rst_path,outfile_path1)
+    # outfile_path2=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201709_f201710_woed.csv'
+    # process_woe_trans(dataset_path2,rst_path,outfile_path2)
+    # outfile_path3=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201709_f201711_woed.csv'
+    # process_woe_trans(dataset_path3,rst_path,outfile_path3)
+
+    # rst_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201710.pkl'
+    # outfile_path1=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201710_f201709_woed.csv'
+    # process_woe_trans(dataset_path1,rst_path,outfile_path1)
+    # outfile_path2=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201710_f201710_woed.csv'
+    # process_woe_trans(dataset_path2,rst_path,outfile_path2)
+    # outfile_path3=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201710_f201711_woed.csv'
+    # process_woe_trans(dataset_path3,rst_path,outfile_path3)
+
+    # rst_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201711_a002_mspct004.pkl'
+    # outfile_path1=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201711_a002_mspct004_f201709_woed.csv'
+    # process_woe_trans(dataset_path1,rst_path,outfile_path1)
+    # outfile_path2=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201711_a002_mspct004_f201710_woed.csv'
+    # process_woe_trans(dataset_path2,rst_path,outfile_path2)
+    # outfile_path3=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201711_a002_mspct004_f201711_woed.csv'
+    # process_woe_trans(dataset_path3,rst_path,outfile_path3)
+
+    print '###################################v13##############################################'
     params = {}
-    params['dataset_path'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f1112_woed.csv'
-    params['config_path'] = r'E:\Code\Python_ML_Code\cs_model\config\config_cs_model_pos_m2.csv'
+    params['dataset_path'] = r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201711_f201711_woed.csv'
+    params['config_path'] = 'E:\\Code\\Python_ML_Code\\cs_model\\config\\config_cs_model_xcash_m1.csv'
 
-    params['df_coef_path'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\eval\cs_m2_pos_f1112_v10.csv'
-    params['pic_coefpath'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\eval\cs_m2_pos_coef_path_f1112_v10.png'
-    params['pic_performance'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\eval\cs_m2_pos_performance_path_f1112_v10.png'
-    params['pic_coefpath_title'] = 'cs_m2_pos_coef_path_f1112_v10'
-    params['pic_performance_title'] = 'cs_m2_pos_performance_path_f1112_v10'
+    params['df_coef_path'] = r'E:\ScoreCard\cs_model\cs_m1_xcash_model\eval\cs_m1_xcash_f201711_v13.csv'
+    params['pic_coefpath'] = r'E:\ScoreCard\cs_model\cs_m1_xcash_model\eval\cs_m1_xcash_coef_path_f201711_v13.png'
+    params['pic_performance'] = r'E:\ScoreCard\cs_model\cs_m1_xcash_model\eval\cs_m1_xcash_performance_path_f201711_v13.png'
+    params['pic_coefpath_title'] = 'cs_m1_xcash_coef_path_f201711_v13'
+    params['pic_performance_title'] = 'cs_m1_xcash_performance_path_f201711_v13'
 
-    params['var_list_specfied'] = ['city'
-                            ,'person_app_age'
-                            ,'due_periods_ratio'
-                            ,'over_due_value'
-                            ,'most_contact_3m'
+    params['var_list_specfied'] = ['kptp'
+                            ,'family_state'
+                            ,'other_person_type'
                             ,'csfq'
-                            ,'recent_contact_day'
-                            ,'seq_delay_days'
-                            ,'cert_4_inital']
-    params['cs'] = np.logspace(-6, -1,30)
+                            ,'due_ptp_ratio'
+                            ,'dk_ratio'
+                            ,'bptp_ratio'
+                            ,'bptp'
+                            ,'incm_times'
+                            ,'pay_delay_fee'
+                            ,'education'
+                            ,'ptp'
+                            ,'seq_duedays'
+                            ,'city'
+                            ,'con10_due_times'
+                            ,'delay_days_rate'
+                            ,'value_balance_ratio'
+                            ,'max_roll_seq'
+                            ,'ptp_ratio'
+                            ,'province'
+                            ,'roll_seq'
+                            ,'max_condue10'
+                            ,'avg_days'
+                            ,'apr_credit_amt'
+                            ,'max_cpd'
+                            ,'finish_periods_ratio'
+                            ,'max_overdue'
+                            ,'delay_times'
+                            ,'delay_days'
+                            ,'lost'
+                            ,'pay_delay_num'
+                            ,'credit_amount'
+                            ,'is_ssi'
+                            ,'his_ptp'
+                            ,'cs_times'
+                            ,'contact'
+                            ,'roll_time']
+    params['cs'] = np.logspace(-5, -1,30)
     for key,value in params.items():
         print key,': ',value
     grid_search_lr_c_main(params)
 
-    fit_single_lr(dataset_path=params['dataset_path']
-                  ,config_path=params['config_path']
-                  ,var_list_specfied=params['var_list_specfied']
-                  ,out_model_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\LogisticRegression_Model\cs_m2_pos_clf_20171112.pkl')
+    # fit_single_lr(dataset_path=params['dataset_path']
+    #               ,config_path=params['config_path']
+    #               ,var_list_specfied=params['var_list_specfied']
+    #               ,out_model_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\LogisticRegression_Model\cs_m1_xcash_clf_201711.pkl')
+    #
+    # proc_validattion(dataset_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201711_f201709_woed.csv'
+    #                  ,config_path=params['config_path']
+    #                  ,model_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\LogisticRegression_Model\cs_m1_xcash_clf_201711.pkl')
+    #
+    # proc_validattion(dataset_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\gendata\cs_m1_xcash_woe_rule_201711_f201710_woed.csv'
+    #                  ,config_path=params['config_path']
+    #                  ,model_path=r'E:\ScoreCard\cs_model\cs_m1_xcash_model\LogisticRegression_Model\cs_m1_xcash_clf_201711.pkl')
 
-    proc_validattion(dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f0308_woed.csv'
-                     ,config_path=params['config_path']
-                     ,model_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\LogisticRegression_Model\cs_m2_pos_clf_20171112.pkl')
 
-    proc_validattion(dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f910_woed.csv'
-                     ,config_path=params['config_path']
-                     ,model_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\LogisticRegression_Model\cs_m2_pos_clf_20171112.pkl')
+    # cor = np.corrcoef(dataset[candidate_var_list].values,rowvar=0)
+    # pd.DataFrame(cor).to_csv('E:\cor.csv')
+

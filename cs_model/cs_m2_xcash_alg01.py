@@ -222,14 +222,14 @@ def grid_search_lr_c_main(params):
     validation_cols_keep.append('target')
     validation_dataset_list = []
 
-    validation_dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f0308_woed.csv'
+    validation_dataset_path=r'E:\ScoreCard\cs_model\cs_m2_xcash_model\gendata\cs_m2_xcash_woe_rule_910_f0308_woed.csv'
     validation_dataset = pd.read_csv(validation_dataset_path)
     # fillna
     for var in candidate_var_list:
         validation_dataset.loc[validation_dataset[var].isnull(), (var)] = 0
     validation_dataset_list.append(validation_dataset[validation_cols_keep])
 
-    validation_dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f910_woed.csv'
+    validation_dataset_path=r'E:\ScoreCard\cs_model\cs_m2_xcash_model\gendata\cs_m2_xcash_woe_rule_910_f1112_woed.csv'
     validation_dataset = pd.read_csv(validation_dataset_path)
     # fillna
     for var in candidate_var_list:
@@ -329,76 +329,78 @@ def proc_validattion(dataset_path,config_path,model_path):
     return ks
 
 if __name__ == '__main__':
-    # dataset_path1 = 'E:\\ScoreCard\\cs_model\\cs_m2_pos_model\\raw_data\\zdy_m2_910_poscash_cs_BASE_V1.csv'
+    # dataset_path1 = 'E:\\ScoreCard\\cs_model\\cs_m2_xcash_model\\raw_data\\zdy_m2_910_poscash_cs_BASE_V1.csv'
     # dataset1 = pd.read_csv(dataset_path1)
-    pos_path1 = 'E:\\ScoreCard\\cs_model\\cs_m2_pos_model\\raw_data\\zdy_m2_910_poscash_cs_BASE_V1_pos.csv'
-    # dataset1[dataset1['sub_product_type']==0].to_csv(pos_path1,index=False)
+    xcash_path1 = 'E:\\ScoreCard\\cs_model\\cs_m2_xcash_model\\raw_data\\zdy_m2_910_poscash_cs_BASE_V1_xcash.csv'
+    # dataset1[dataset1['sub_product_type']==1].to_csv(xcash_path1,index=False)
     # print dataset_path1,'\n',dataset1.groupby('sub_product_type').count().iloc[:,1]
-    #
-    # dataset_path2 = 'E:\\ScoreCard\\cs_model\\cs_m2_pos_model\\raw_data\\zdy_m2_1112_poscash_cs_BASE_V1.csv'
+
+    # dataset_path2 = 'E:\\ScoreCard\\cs_model\\cs_m2_xcash_model\\raw_data\\zdy_m2_1112_poscash_cs_BASE_V1.csv'
     # dataset2 = pd.read_csv(dataset_path2)
-    pos_path2 = 'E:\\ScoreCard\\cs_model\\cs_m2_pos_model\\raw_data\\zdy_m2_1112_poscash_cs_BASE_V1_pos.csv'
-    # dataset2[dataset2['sub_product_type']==0].to_csv(pos_path2,index=False)
+    xcash_path2 = 'E:\\ScoreCard\\cs_model\\cs_m2_xcash_model\\raw_data\\zdy_m2_1112_poscash_cs_BASE_V1_xcash.csv'
+    # dataset2[dataset2['sub_product_type']==1].to_csv(xcash_path2,index=False)
     # print dataset_path2,'\n',dataset2.groupby('sub_product_type').count().iloc[:,1]
-    #
-    # dataset_path3 = 'E:\\ScoreCard\\cs_model\\cs_m2_pos_model\\raw_data\\zdy_m2_0308_poscash_cs_BASE_V1.csv'
+
+    # dataset_path3 = 'E:\\ScoreCard\\cs_model\\cs_m2_xcash_model\\raw_data\\zdy_m2_0308_poscash_cs_BASE_V1.csv'
     # dataset3 = pd.read_csv(dataset_path3)
-    pos_path3 = 'E:\\ScoreCard\\cs_model\\cs_m2_pos_model\\raw_data\\zdy_m2_0308_poscash_cs_BASE_V1_pos.csv'
-    # dataset3[dataset3['sub_product_type']==0].to_csv(pos_path3,index=False)
+    xcash_path3 = 'E:\\ScoreCard\\cs_model\\cs_m2_xcash_model\\raw_data\\zdy_m2_0308_poscash_cs_BASE_V1_xcash.csv'
+    # dataset3[dataset3['sub_product_type']==1].to_csv(xcash_path3,index=False)
     # print dataset_path3,'\n',dataset3.groupby('sub_product_type').count().iloc[:,1]
 
     config_path = 'E:\\Code\\Python_ML_Code\\cs_model\\config\\config_cs_model_pos_m2.csv'
 
-    # dataset = pd.read_csv(pos_path2)
-    # dataset[dataset['state_date']<'2017-12-19'].to_csv(pos_path2,index=False)
-    # feature_detail,rst = process_train_woe(infile_path=pos_path2
-    #                                        ,outfile_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\features_detail\cs_m2_pos_1112_features_detail.csv'
-    #                                        ,rst_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112.pkl')
+    # dataset = pd.read_csv(xcash_path1)
+    # dataset[dataset['state_date']<'2017-12-19'].to_csv(xcash_path1,index=False)
+    # feature_detail,rst = process_train_woe(infile_path=xcash_path1
+    #                                        ,outfile_path=r'E:\ScoreCard\cs_model\cs_m2_xcash_model\features_detail\cs_m2_xcash_910_features_detail.csv'
+    #                                        ,rst_path=r'E:\ScoreCard\cs_model\cs_m2_xcash_model\gendata\cs_m2_xcash_woe_rule_910.pkl')
 
-    # rst_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112.pkl'
-    # outfile_path3=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f0308_woed.csv'
-    # process_woe_trans(pos_path3,rst_path,outfile_path3)
+    # rst_path=r'E:\ScoreCard\cs_model\cs_m2_xcash_model\gendata\cs_m2_xcash_woe_rule_910.pkl'
+    # outfile_path3=r'E:\ScoreCard\cs_model\cs_m2_xcash_model\gendata\cs_m2_xcash_woe_rule_910_f0308_woed.csv'
+    # process_woe_trans(xcash_path3,rst_path,outfile_path3)
     
-    # outfile_path1=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f910_woed.csv'
-    # process_woe_trans(pos_path1,rst_path,outfile_path1)
+    # outfile_path1=r'E:\ScoreCard\cs_model\cs_m2_xcash_model\gendata\cs_m2_xcash_woe_rule_910_f910_woed.csv'
+    # process_woe_trans(xcash_path1,rst_path,outfile_path1)
     
-    # outfile_path2=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f1112_woed.csv'
-    # process_woe_trans(pos_path2,rst_path,outfile_path2)
+    # outfile_path2=r'E:\ScoreCard\cs_model\cs_m2_xcash_model\gendata\cs_m2_xcash_woe_rule_910_f1112_woed.csv'
+    # process_woe_trans(xcash_path2,rst_path,outfile_path2)
     
-    print '###################################v10##############################################'
+    print '###################################v5##############################################'
     params = {}
-    params['dataset_path'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f1112_woed.csv'
+    params['dataset_path'] = r'E:\ScoreCard\cs_model\cs_m2_xcash_model\gendata\cs_m2_xcash_woe_rule_910_f910_woed.csv'
     params['config_path'] = r'E:\Code\Python_ML_Code\cs_model\config\config_cs_model_pos_m2.csv'
 
-    params['df_coef_path'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\eval\cs_m2_pos_f1112_v10.csv'
-    params['pic_coefpath'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\eval\cs_m2_pos_coef_path_f1112_v10.png'
-    params['pic_performance'] = r'E:\ScoreCard\cs_model\cs_m2_pos_model\eval\cs_m2_pos_performance_path_f1112_v10.png'
-    params['pic_coefpath_title'] = 'cs_m2_pos_coef_path_f1112_v10'
-    params['pic_performance_title'] = 'cs_m2_pos_performance_path_f1112_v10'
+    params['df_coef_path'] = r'E:\ScoreCard\cs_model\cs_m2_xcash_model\eval\cs_m2_xcash_f910_v5.csv'
+    params['pic_coefpath'] = r'E:\ScoreCard\cs_model\cs_m2_xcash_model\eval\cs_m2_xcash_coef_path_f910_v5.png'
+    params['pic_performance'] = r'E:\ScoreCard\cs_model\cs_m2_xcash_model\eval\cs_m2_xcash_performance_path_f910_v5.png'
+    params['pic_coefpath_title'] = 'cs_m2_xcash_coef_path_f910_v5'
+    params['pic_performance_title'] = 'cs_m2_xcash_performance_path_f910_v5'
 
     params['var_list_specfied'] = ['city'
-                            ,'person_app_age'
-                            ,'due_periods_ratio'
-                            ,'over_due_value'
+                            ,'kptp_ratio'
+                            ,'lost'
+                            ,'ptp_ratio'
+                            ,'due_cstime_ratio'
+                            ,'intime_pay'
                             ,'most_contact_3m'
-                            ,'csfq'
+                            ,'contact'
                             ,'recent_contact_day'
                             ,'seq_delay_days'
                             ,'cert_4_inital']
     params['cs'] = np.logspace(-6, -1,30)
     for key,value in params.items():
         print key,': ',value
-    grid_search_lr_c_main(params)
+    # grid_search_lr_c_main(params)
 
-    fit_single_lr(dataset_path=params['dataset_path']
-                  ,config_path=params['config_path']
-                  ,var_list_specfied=params['var_list_specfied']
-                  ,out_model_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\LogisticRegression_Model\cs_m2_pos_clf_20171112.pkl')
-
-    proc_validattion(dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f0308_woed.csv'
-                     ,config_path=params['config_path']
-                     ,model_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\LogisticRegression_Model\cs_m2_pos_clf_20171112.pkl')
-
-    proc_validattion(dataset_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\cs_m2_pos_woe_rule_1112_f910_woed.csv'
-                     ,config_path=params['config_path']
-                     ,model_path=r'E:\ScoreCard\cs_model\cs_m2_pos_model\gendata\LogisticRegression_Model\cs_m2_pos_clf_20171112.pkl')
+    # fit_single_lr(dataset_path=params['dataset_path']
+    #               ,config_path=params['config_path']
+    #               ,var_list_specfied=params['var_list_specfied']
+    #               ,out_model_path=r'E:\ScoreCard\cs_model\cs_m2_xcash_model\LogisticRegression_Model\cs_m2_xcash_clf_2017910.pkl')
+    #
+    # proc_validattion(dataset_path=r'E:\ScoreCard\cs_model\cs_m2_xcash_model\gendata\cs_m2_xcash_woe_rule_910_f0308_woed.csv'
+    #                  ,config_path=params['config_path']
+    #                  ,model_path=r'E:\ScoreCard\cs_model\cs_m2_xcash_model\LogisticRegression_Model\cs_m2_xcash_clf_2017910.pkl')
+    #
+    # proc_validattion(dataset_path=r'E:\ScoreCard\cs_model\cs_m2_xcash_model\gendata\cs_m2_xcash_woe_rule_910_f1112_woed.csv'
+    #                  ,config_path=params['config_path']
+    #                  ,model_path=r'E:\ScoreCard\cs_model\cs_m2_xcash_model\LogisticRegression_Model\cs_m2_xcash_clf_2017910.pkl')
